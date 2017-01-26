@@ -24,6 +24,7 @@ namespace BridgeProblem {
 
 			static bool compare(const BridgeState& a, const BridgeState& b);
 			virtual void getActions(std::vector<AIUtils::Action*>& actions);
+			virtual std::string describe();
 
 		private:
 			BridgeSide peopleSides[6];

@@ -15,6 +15,8 @@ int main()
 	BridgeState initialState;
 	seenStates.insert(initialState);
 
+	std::cout << initialState.describe() << std::endl;
+
 	std::vector<AIUtils::Action*> actions;
 	initialState.getActions(actions);
 

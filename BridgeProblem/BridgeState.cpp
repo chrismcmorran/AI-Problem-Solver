@@ -1,3 +1,4 @@
+#include <sstream>
 #include <cstring>
 #include "BridgeAction.h"
 #include "BridgeState.h"
@@ -55,7 +56,6 @@ static void genMoves(std::vector<AIUtils::Action*>& actions, std::vector<int>& p
 	}
 }
 
-#include <iostream>
 void BridgeState::getActions(std::vector<AIUtils::Action*>& actions)
 {
 	BridgeSide dest = (torchSide == LEFT) ? RIGHT : LEFT;
@@ -76,4 +76,38 @@ void BridgeState::getActions(std::vector<AIUtils::Action*>& actions)
 		int p2 = people.at(i);
 		genMoves(actions, people, dest, i+1, p2);
 	}
+}
+
+std::string BridgeState::describe()
+{
+	// Draws the current state
+	std::ostringstream ss;
+	std::vector<int> rightPeople;
+	unsigned int i;
+	for (i = 0; i < 6; ++i)
+	{
+		if (peopleSides[i] == LEFT)
+			ss << i << " ";
+		else
+		{
+			ss << "  ";
+			rightPeople.push_back(i);
+		}
+	}
+
+	if (torchSide == LEFT)
+		ss << "* ";
+	else
+		ss << "  ";
+
+	ss << " =================================== ";
+
+	if (torchSide == RIGHT)
+		ss << " * ";
+	else
+		ss << " ";
+
+	for (i = 0; i < rightPeople.size(); ++i)
+		ss << rightPeople.at(i) << " ";
+	return ss.str();
 }

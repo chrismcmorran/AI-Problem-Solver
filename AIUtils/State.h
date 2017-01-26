@@ -8,6 +8,7 @@ namespace AIUtils {
 	class State {
 		public:
 			virtual void getActions(std::vector<Action*>& actions) = 0;
+			virtual std::string describe() = 0;
 	};
 }
 
