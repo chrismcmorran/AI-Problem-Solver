@@ -20,6 +20,7 @@ BridgeState* BridgeAction::execute(BridgeState& state)
 	newState->setPersonSide(person1, destSide);
 	if (person2 != -1)
 		newState->setPersonSide(person2, destSide);
+	newState->setTorchSide(destSide);
 	return newState;
 }
 
