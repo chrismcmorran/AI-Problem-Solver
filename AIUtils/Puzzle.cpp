@@ -3,22 +3,31 @@
 #include <string>
 #include <iostream>
 #include "Puzzle.h"
+#include "BreadthFirstFringe.h"
+#include "DepthFirstFringe.h"
 
 using namespace AI;
 
-std::queue<SearchNode*> fringe;
+Fringe<SearchNode*>* fringe;
 std::set<const State*, PointerComp<State>> seenStates;
 
-Puzzle::Puzzle(State* initialState, State* goalState)
+Puzzle::Puzzle(State* initialState, State* goalState, SearchType searchType)
 {
-	fringe.push(new SearchNode(initialState));
+	if (searchType == BREADTH_FIRST)
+		fringe = new BreadthFirstFringe<SearchNode*>;
+	else if (searchType == DEPTH_FIRST)
+		fringe = new DepthFirstFringe<SearchNode*>;
+	else
+		fringe = NULL;
+
+	fringe->push(new SearchNode(initialState));
 	seenStates.insert(initialState);
 	this->goalState = goalState;
 }
 
 Puzzle::~Puzzle()
 {
-
+	delete fringe;
 }
 
 void Puzzle::expand(SearchNode* node)
@@ -37,7 +46,7 @@ void Puzzle::expand(SearchNode* node)
 		if (seenStates.find(generatedState) == seenStates.end())
 		{
 			// State has not been seen before
-			fringe.push(new SearchNode(generatedState, action, node));
+			fringe->push(new SearchNode(generatedState, action, node));
 			seenStates.insert(generatedState);
 		}
 		else
@@ -72,11 +81,11 @@ static void outputSolution(SearchNode* node, std::ostream& out)
 
 void Puzzle::solve()
 {
-	while(!fringe.empty())
+	while(!fringe->empty())
 	{
-		SearchNode* node = fringe.front();
+		SearchNode* node = fringe->front();
 		const AI::State* state = node->getState();
-		fringe.pop();
+		fringe->pop();
 
 		if (*state == *goalState)
 		{

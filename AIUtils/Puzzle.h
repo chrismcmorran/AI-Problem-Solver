@@ -6,8 +6,14 @@
 #include <set>
 #include "State.h"
 #include "SearchNode.h"
+#include "Fringe.h"
 
 namespace AI {
+	enum SearchType {
+		BREADTH_FIRST,
+		DEPTH_FIRST
+	};
+
 	template <typename T>
 	// Allows std::set of pointers to be sorted using an overridden operator<
 	struct PointerComp
@@ -21,12 +27,12 @@ namespace AI {
 	// A problem to be solved using AI techniques
 	class Puzzle {
 		public:
-			Puzzle(State* initialState, State* goalState);
+			Puzzle(State* initialState, State* goalState, SearchType searchType);
 			~Puzzle();
 			void solve();
 
 		private:
-			std::queue<SearchNode*> fringe;
+			Fringe<SearchNode*>* fringe;
 			std::set<const State*, PointerComp<State>> seenStates;
 			const State* goalState;
 

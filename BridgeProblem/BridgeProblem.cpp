@@ -15,7 +15,7 @@ int main()
 {
 	BridgeState* initial = new BridgeState(LEFT);
 	BridgeState* goal = new BridgeState(RIGHT);
-	AI::Puzzle bridgePuzzle(initial, goal);
+	AI::Puzzle bridgePuzzle(initial, goal, AI::DEPTH_FIRST);
 	bridgePuzzle.solve();
 	//delete initial;
 	//delete goal;
