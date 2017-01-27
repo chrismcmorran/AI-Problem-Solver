@@ -2,12 +2,13 @@
 #define _ACTION_H
 
 #include <vector>
-/*#include "State.h"*/
+#include "State.h"
 
-namespace AIUtils {
+namespace AI {
+	// An action that can be performed on a state
 	class Action {
 		public:
-			//virtual State* execute(State& state) = 0;
+			virtual const State* execute(const State* state) = 0;
 			virtual std::string describe() = 0;
 	};
 }

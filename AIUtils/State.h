@@ -2,13 +2,22 @@
 #define _STATE_H
 
 #include <vector>
-#include "Action.h"
 
-namespace AIUtils {
+namespace AI {
+	class Action;
 	class State {
+		// A given state of the puzzle
 		public:
-			virtual void getActions(std::vector<Action*>& actions) = 0;
-			virtual std::string describe() = 0;
+			virtual int getStateCode() const = 0;
+			virtual void getActions(std::vector<Action*>& actions) const = 0;
+			virtual std::string describe() const = 0;
+
+			bool operator<(const State& other) const;
+			bool operator>(const State& other) const;
+			bool operator<=(const State& other) const;
+			bool operator>=(const State& other) const;
+			bool operator==(const State& other) const;
+			bool operator!=(const State& other) const;
 	};
 }
 

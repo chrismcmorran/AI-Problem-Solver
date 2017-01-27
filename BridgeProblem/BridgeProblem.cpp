@@ -1,31 +1,24 @@
-#include <string>
-#include <iostream>
-#include <set>
-
+#include "../AIUtils/Puzzle.h"
 #include "BridgeState.h"
 
 using namespace BridgeProblem;
 
+/* The bridge problem:
+
+   A number of people must move over a narrow bridge at night. The bridge can
+   only hold two people at a time and a torch has to be used to cross the bridge.
+   Each person takes a certain amount of time to cross the bridge. When two persons
+   are crossing the bridge together, they both move at the pace dictated by the
+   slower person. The task is get the group across the bridge in the minimum time. */
+
 int main()
 {
-	// Value is the bridge crossing speed of the person
-	int people[6] = {1,2,3,4,5,6};
-	std::set<BridgeState, bool (*)(const BridgeState& a, const BridgeState& b)> seenStates(&BridgeState::compare);
-
-	BridgeState initialState;
-	seenStates.insert(initialState);
-
-	std::cout << initialState.describe() << std::endl;
-
-	std::vector<AIUtils::Action*> actions;
-	initialState.getActions(actions);
-
-	// Cleanup
-	for (unsigned int i = 0; i < actions.size(); ++i)
-	{
-		std::cout << actions.at(i)->describe() << std::endl;
-		delete actions.at(i);
-	}
+	BridgeState* initial = new BridgeState(LEFT);
+	BridgeState* goal = new BridgeState(RIGHT);
+	AI::Puzzle bridgePuzzle(initial, goal);
+	bridgePuzzle.solve();
+	//delete initial;
+	//delete goal;
 
 	return 0;
 }

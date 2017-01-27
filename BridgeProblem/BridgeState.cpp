@@ -1,16 +1,15 @@
 #include <sstream>
-#include <cstring>
 #include "BridgeAction.h"
 #include "BridgeState.h"
 
 using namespace BridgeProblem;
 
-BridgeState::BridgeState()
+BridgeState::BridgeState(BridgeSide startingSide)
 {
 	// Initial state
-	torchSide = LEFT;
+	torchSide = startingSide;
 	for (int i = 0; i < 6; ++i)
-		peopleSides[i] = LEFT;
+		peopleSides[i] = startingSide;
 }
 
 BridgeState::BridgeState(const BridgeState &bs)
@@ -19,7 +18,7 @@ BridgeState::BridgeState(const BridgeState &bs)
 	memcpy(peopleSides, bs.peopleSides, sizeof(peopleSides));
 }
 
-BridgeSide BridgeState::getPersonSide(int i)
+BridgeSide BridgeState::getPersonSide(int i) const
 {
 	return peopleSides[i];
 }
@@ -29,7 +28,7 @@ void BridgeState::setPersonSide(int i, BridgeSide bs)
 	peopleSides[i] = bs;
 }
 
-BridgeSide BridgeState::getTorchSide()
+BridgeSide BridgeState::getTorchSide() const
 {
 	return torchSide;
 }
@@ -39,14 +38,21 @@ void BridgeState::setTorchSide(BridgeSide bs)
 	torchSide = bs;
 }
 
-bool BridgeState::compare(const BridgeState& a, const BridgeState& b)
+int BridgeState::getStateCode() const
 {
-	// Assumes peopleSides arrays are equal in length
-	return ((std::memcmp(a.peopleSides, b.peopleSides, sizeof(a.peopleSides)) < 0) || 
-		a.torchSide < b.torchSide);
+	// TODO: will this scale?
+	int s = 0;
+	for (int i = 0; i < 6; ++i)
+	{
+		if (getPersonSide(i) == RIGHT)
+			s |= (1 << (i+1));
+	}
+	if (torchSide == RIGHT)
+		s |= 1;
+	return s;
 }
 
-static void genMoves(std::vector<AIUtils::Action*>& actions, std::vector<int>& people, BridgeSide dest, int start, int p2)
+static void genMoves(std::vector<AI::Action*>& actions, std::vector<int>& people, BridgeSide dest, int start, int p2)
 {
 	// Generate all moves using a fixed person2 (i.e., all pairs including p2)
 	for (unsigned int i = start; i < people.size(); ++i)
@@ -56,7 +62,7 @@ static void genMoves(std::vector<AIUtils::Action*>& actions, std::vector<int>& p
 	}
 }
 
-void BridgeState::getActions(std::vector<AIUtils::Action*>& actions)
+void BridgeState::getActions(std::vector<AI::Action*>& actions) const
 {
 	BridgeSide dest = (torchSide == LEFT) ? RIGHT : LEFT;
 	std::vector<int> people;
@@ -78,7 +84,7 @@ void BridgeState::getActions(std::vector<AIUtils::Action*>& actions)
 	}
 }
 
-std::string BridgeState::describe()
+std::string BridgeState::describe() const
 {
 	// Draws the current state
 	std::ostringstream ss;

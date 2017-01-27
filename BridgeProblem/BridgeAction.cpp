@@ -12,11 +12,11 @@ BridgeAction::BridgeAction(BridgeSide dest, int p1, int p2)
 	person2 = p2;
 }
 
-BridgeState* BridgeAction::execute(BridgeState& state)
+const AI::State* BridgeAction::execute(const AI::State* state)
 {
-	// Assumes at least one person will always be moved
+	// Assumes at least one person will always be moved, and that state is always a BridgeState
 	// Person index of -1 indicates "no person"
-	BridgeState* newState = new BridgeState(state);
+	BridgeState* newState = new BridgeState(*static_cast<const BridgeState*>(state));
 	newState->setPersonSide(person1, destSide);
 	if (person2 != -1)
 		newState->setPersonSide(person2, destSide);

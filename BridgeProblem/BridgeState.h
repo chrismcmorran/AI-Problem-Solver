@@ -12,19 +12,20 @@ namespace BridgeProblem {
 
 	class BridgeAction;
 
-	class BridgeState : public AIUtils::State {
+	// A state of the bridge problem
+	class BridgeState : public AI::State {
 		public:
-			BridgeState();
+			BridgeState(BridgeSide startingSide);
 			BridgeState(const BridgeState &bs);
 
-			BridgeSide getPersonSide(int i);
+			BridgeSide getPersonSide(int i) const;
 			void setPersonSide(int i, BridgeSide bs);
-			BridgeSide getTorchSide();
+			BridgeSide getTorchSide() const;
 			void setTorchSide(BridgeSide bs);
 
-			static bool compare(const BridgeState& a, const BridgeState& b);
-			virtual void getActions(std::vector<AIUtils::Action*>& actions);
-			virtual std::string describe();
+			virtual int getStateCode() const;
+			virtual void getActions(std::vector<AI::Action*>& actions) const;
+			virtual std::string describe() const;
 
 		private:
 			BridgeSide peopleSides[6];

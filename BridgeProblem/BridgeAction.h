@@ -6,10 +6,12 @@
 #include <string>
 
 namespace BridgeProblem {
-	class BridgeAction : public AIUtils::Action {
+	/* An action that can be performed on a state of the
+	   bridge problem (i.e., moving people across) */
+	class BridgeAction : public AI::Action {
 		public:
 			BridgeAction(BridgeSide dest, int p1, int p2=-1);
-			virtual BridgeState* execute(BridgeState& state);
+			virtual const AI::State* execute(const AI::State* state);
 			virtual std::string describe();
 
 		private:
