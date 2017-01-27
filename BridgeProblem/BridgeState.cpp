@@ -54,7 +54,8 @@ void BridgeState::setTorchSide(BridgeSide bs)
 
 unsigned long BridgeState::getStateCode() const
 {
-	// NOTE: The number of people is limited to the number of bits in a long int
+	/* NOTE: The number of people is limited to the number of bits in
+	   a long int minus 1 */
 	unsigned long s = 0;
 	for (unsigned int i = 0; i < peopleTimes->size(); ++i)
 	{

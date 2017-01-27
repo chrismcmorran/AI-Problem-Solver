@@ -16,39 +16,38 @@ using namespace BridgeProblem;
    are crossing the bridge together, they both move at the pace dictated by the
    slower person. The task is get the group across the bridge in the minimum time. */
 
-void getTimes(std::vector<int>* people, int numPeople)
+static int getInt(std::string prompt)
 {
-	for (int i = 0; i < numPeople; ++i)
+	// Get int from user and validate input
+	std::string input;
+	int i;
+
+	while (true)
 	{
-		std::string input;
-		while (true)
-		{
-			int time;
-			std::cout << "How many time units does person " << i << " take to cross the bridge? ";
-			std::cin >> input;
+		std::cout << prompt;
+		std::cin >> input;
+		std::stringstream ss(input);
+		ss >> i;
 
-			std::stringstream ss(input);
-			ss >> time;
-
-			if (!ss)
-				std::cout << "Invalid entry. ";
-			else
-			{
-				people->push_back(time);
-				break;
-			}
-		}
+		if (ss.fail())
+			std::cout << "Invalid input. ";
+		else
+			return i;
 	}
-	std::cout << std::endl;
 }
-
 
 int main()
 {
 	std::vector<int> peopleTimes;
-
-	//std::cout << "How many people are trying to cross the bridge? ";
-	getTimes(&peopleTimes, 6);
+	int numPeople = getInt("How many people are trying to cross the bridge? ");
+	for (int i = 0; i < numPeople; ++i)
+	{
+		std::stringstream ss;
+		ss << "How many time units does person " << i << " take to cross the bridge? ";
+		peopleTimes.push_back(getInt(ss.str()));
+		ss.clear();
+	}
+	std::cout << std::endl;
 
 	BridgeState* initial = new BridgeState(&peopleTimes, LEFT);
 	BridgeState* goal = new BridgeState(&peopleTimes, RIGHT);
