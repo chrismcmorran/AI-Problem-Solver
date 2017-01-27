@@ -27,6 +27,9 @@ Puzzle::Puzzle(State* initialState, State* goalState, SearchType searchType)
 
 Puzzle::~Puzzle()
 {
+	std::set<const State*, PointerComp<State>>::iterator it;
+	for (it = seenStates.begin(); it != seenStates.end(); ++it)
+		delete *it;
 	delete fringe;
 }
 

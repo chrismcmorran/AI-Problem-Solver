@@ -9,12 +9,6 @@ SearchNode::SearchNode(const State* state, Action* generatingAction, SearchNode*
 	this->parent = parent;
 }
 
-SearchNode::~SearchNode()
-{
-	delete state;
-	delete generatingAction;
-}
-
 SearchNode* SearchNode::getParent()
 {
 	return parent;

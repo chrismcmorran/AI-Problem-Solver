@@ -11,7 +11,6 @@ namespace AI {
 	class SearchNode {
 		public:
 			SearchNode(const State* state, Action* generatingAction=NULL, SearchNode* parent=NULL);
-			~SearchNode();
 			SearchNode* getParent();
 			const State* getState();
 			Action* getGeneratingAction();
