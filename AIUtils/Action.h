@@ -8,7 +8,8 @@ namespace AI {
 	// An action that can be performed on a state
 	class Action {
 		public:
-			virtual const State* execute(const State* state) = 0;
+			// Returns the cost of the action
+			virtual int execute(const State* inState, State** outState) = 0;
 			virtual std::string describe() = 0;
 	};
 }

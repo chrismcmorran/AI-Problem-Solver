@@ -2,9 +2,10 @@
 
 using namespace AI;
 
-SearchNode::SearchNode(const State* state, Action* generatingAction, SearchNode* parent)
+SearchNode::SearchNode(const State* state, int cost, Action* generatingAction, SearchNode* parent)
 {
 	this->state = state;
+	this->costFromRoot = cost;
 	this->generatingAction = generatingAction;
 	this->parent = parent;
 }
@@ -22,4 +23,9 @@ const State* SearchNode::getState()
 Action* SearchNode::getGeneratingAction()
 {
 	return generatingAction;
+}
+
+int SearchNode::getCostFromRoot()
+{
+	return costFromRoot;
 }

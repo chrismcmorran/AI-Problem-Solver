@@ -10,15 +10,17 @@ namespace AI {
 	   construct a path from the initial state */
 	class SearchNode {
 		public:
-			SearchNode(const State* state, Action* generatingAction=NULL, SearchNode* parent=NULL);
+			SearchNode(const State* state, int cost=0, Action* generatingAction=NULL, SearchNode* parent=NULL);
 			SearchNode* getParent();
 			const State* getState();
 			Action* getGeneratingAction();
+			int getCostFromRoot();
 
 		private:
 			SearchNode* parent;
 			const State* state;
 			Action* generatingAction;
+			int costFromRoot;
 	};
 }
 

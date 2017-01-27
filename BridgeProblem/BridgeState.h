@@ -1,34 +1,37 @@
 #ifndef _BRIDGE_STATE_H
 #define _BRIDGE_STATE_H
 
-#include "../AIUtils/State.h"
 #include <vector>
+#include "../AIUtils/State.h"
 
 namespace BridgeProblem {
+	class BridgeAction;
+
 	enum BridgeSide {
 		LEFT,
 		RIGHT
 	};
 
-	class BridgeAction;
-
 	// A state of the bridge problem
 	class BridgeState : public AI::State {
 		public:
-			BridgeState(BridgeSide startingSide);
+			BridgeState(std::vector<int>* peopleTimes, BridgeSide startingSide);
 			BridgeState(const BridgeState &bs);
+			~BridgeState();
 
 			BridgeSide getPersonSide(int i) const;
+			int getPersonTime(int i) const;
 			void setPersonSide(int i, BridgeSide bs);
 			BridgeSide getTorchSide() const;
 			void setTorchSide(BridgeSide bs);
 
-			virtual int getStateCode() const;
+			virtual unsigned long getStateCode() const;
 			virtual void getActions(std::vector<AI::Action*>& actions) const;
 			virtual std::string describe() const;
 
 		private:
-			BridgeSide peopleSides[6];
+			const std::vector<int>* peopleTimes;
+			BridgeSide* peopleSides;
 			BridgeSide torchSide;
 	};
 }

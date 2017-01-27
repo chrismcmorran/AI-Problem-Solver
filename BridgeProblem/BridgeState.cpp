@@ -4,23 +4,37 @@
 
 using namespace BridgeProblem;
 
-BridgeState::BridgeState(BridgeSide startingSide)
+BridgeState::BridgeState(std::vector<int>* peopleTimes, BridgeSide startingSide)
 {
-	// Initial state
 	torchSide = startingSide;
-	for (int i = 0; i < 6; ++i)
+	this->peopleTimes = peopleTimes;
+	peopleSides = new BridgeSide[peopleTimes->size()];
+	for (unsigned int i = 0; i < peopleTimes->size(); ++i)
 		peopleSides[i] = startingSide;
 }
 
 BridgeState::BridgeState(const BridgeState &bs)
 {
-	// Assumes peopleSides arrays are equal in length
-	memcpy(peopleSides, bs.peopleSides, sizeof(peopleSides));
+	int numPeople = bs.peopleTimes->size();
+	torchSide = bs.torchSide;
+	peopleTimes = bs.peopleTimes;
+	peopleSides = new BridgeSide[numPeople];
+	memcpy(peopleSides, bs.peopleSides, sizeof(peopleSides) * numPeople);
+}
+
+BridgeState::~BridgeState()
+{
+	delete[] peopleSides;
 }
 
 BridgeSide BridgeState::getPersonSide(int i) const
 {
 	return peopleSides[i];
+}
+
+int BridgeState::getPersonTime(int i) const
+{
+	return peopleTimes->at(i);
 }
 
 void BridgeState::setPersonSide(int i, BridgeSide bs)
@@ -38,11 +52,11 @@ void BridgeState::setTorchSide(BridgeSide bs)
 	torchSide = bs;
 }
 
-int BridgeState::getStateCode() const
+unsigned long BridgeState::getStateCode() const
 {
-	// TODO: will this scale?
-	int s = 0;
-	for (int i = 0; i < 6; ++i)
+	// NOTE: The number of people is limited to the number of bits in a long int
+	unsigned long s = 0;
+	for (unsigned int i = 0; i < peopleTimes->size(); ++i)
 	{
 		if (getPersonSide(i) == RIGHT)
 			s |= (1 << (i+1));
@@ -69,7 +83,7 @@ void BridgeState::getActions(std::vector<AI::Action*>& actions) const
 	unsigned int i;
 
 	// Which people can be moved (who's on the same side as the torch)?
-	for (i = 0; i < 6; ++i)
+	for (i = 0; i < peopleTimes->size(); ++i)
 	{
 		if (peopleSides[i] == torchSide)
 			people.push_back(i);
@@ -90,7 +104,7 @@ std::string BridgeState::describe() const
 	std::ostringstream ss;
 	std::vector<int> rightPeople;
 	unsigned int i;
-	for (i = 0; i < 6; ++i)
+	for (i = 0; i < peopleTimes->size(); ++i)
 	{
 		if (peopleSides[i] == LEFT)
 			ss << i << " ";

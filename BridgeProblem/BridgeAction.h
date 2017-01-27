@@ -11,7 +11,7 @@ namespace BridgeProblem {
 	class BridgeAction : public AI::Action {
 		public:
 			BridgeAction(BridgeSide dest, int p1, int p2=-1);
-			virtual const AI::State* execute(const AI::State* state);
+			virtual int execute(const AI::State* inState, AI::State** outState);
 			virtual std::string describe();
 
 		private:

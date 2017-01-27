@@ -12,16 +12,25 @@ BridgeAction::BridgeAction(BridgeSide dest, int p1, int p2)
 	person2 = p2;
 }
 
-const AI::State* BridgeAction::execute(const AI::State* state)
+int BridgeAction::execute(const AI::State* state, AI::State** outState)
 {
 	// Assumes at least one person will always be moved, and that state is always a BridgeState
 	// Person index of -1 indicates "no person"
 	BridgeState* newState = new BridgeState(*static_cast<const BridgeState*>(state));
+	int cost = newState->getPersonTime(person1);
 	newState->setPersonSide(person1, destSide);
 	if (person2 != -1)
+	{
+		int p2Time = newState->getPersonTime(person2);
 		newState->setPersonSide(person2, destSide);
+		if (p2Time > cost)
+			cost = p2Time;
+	}
 	newState->setTorchSide(destSide);
-	return newState;
+	*outState = newState;
+
+	// Cost = slowest time between the people moved
+	return cost;
 }
 
 std::string BridgeAction::describe()

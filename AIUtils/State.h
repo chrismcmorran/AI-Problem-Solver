@@ -8,7 +8,7 @@ namespace AI {
 	class State {
 		// A given state of the puzzle
 		public:
-			virtual int getStateCode() const = 0;
+			virtual unsigned long getStateCode() const = 0;
 			virtual void getActions(std::vector<Action*>& actions) const = 0;
 			virtual std::string describe() const = 0;
 

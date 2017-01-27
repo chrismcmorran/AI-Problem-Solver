@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include "Puzzle.h"
+#include "Action.h"
 #include "BreadthFirstFringe.h"
 #include "DepthFirstFringe.h"
 
@@ -36,20 +37,21 @@ Puzzle::~Puzzle()
 void Puzzle::expand(SearchNode* node)
 {
 	// Generate successor actions
-	std::vector<AI::Action*> actions;
-	const AI::State* state = node->getState();
+	std::vector<Action*> actions;
+	const State* state = node->getState();
 	state->getActions(actions);
 
 	for (unsigned int i = 0; i < actions.size(); ++i)
 	{
 		// Add valid successor states to the fringe
-		AI::Action* action = actions.at(i);
-		const AI::State* generatedState = action->execute(state);
+		Action* action = actions.at(i);
+		State* generatedState;
+		int cost = action->execute(state, &generatedState);
 
 		if (seenStates.find(generatedState) == seenStates.end())
 		{
 			// State has not been seen before
-			fringe->push(new SearchNode(generatedState, action, node));
+			fringe->push(new SearchNode(generatedState, node->getCostFromRoot() + cost, action, node));
 			seenStates.insert(generatedState);
 		}
 		else
@@ -78,7 +80,8 @@ static void outputSolution(SearchNode* node, std::ostream& out)
 		AI::Action* a = (*it)->getGeneratingAction();
 		if (a != NULL)
 			out << a->describe() << std::endl;
-		out << (*it)->getState()->describe() << std::endl << std::endl;
+		out << (*it)->getState()->describe() << std::endl;
+		out << "Cumulative cost: " << (*it)->getCostFromRoot() << std::endl << std::endl;
 	}
 }
 
