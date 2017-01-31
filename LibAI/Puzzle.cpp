@@ -31,6 +31,13 @@ Puzzle::~Puzzle()
 	std::set<const State*, PointerComp<State>>::iterator it;
 	for (it = seenStates.begin(); it != seenStates.end(); ++it)
 		delete *it;
+	delete goalState;
+
+	while(!fringe->empty())
+	{
+		delete fringe->front();
+		fringe->pop();
+	}
 	delete fringe;
 }
 
@@ -53,6 +60,7 @@ void Puzzle::expand(SearchNode* node)
 			// State has not been seen before
 			fringe->push(new SearchNode(generatedState, node->getCostFromRoot() + cost, action, node));
 			seenStates.insert(generatedState);
+			node->incChildCount();
 		}
 		else
 		{
@@ -82,6 +90,7 @@ static void outputSolution(SearchNode* node, std::ostream& out)
 			out << a->describe() << std::endl;
 		out << (*it)->getState()->describe() << std::endl;
 		out << "Cumulative cost: " << (*it)->getCostFromRoot() << std::endl << std::endl;
+		delete *it;
 	}
 }
 
@@ -99,9 +108,21 @@ void Puzzle::solve()
 			outputSolution(node, std::cout);
 			return;
 		}
+		else
+		{
+			// Generate successor nodes from the current node
+			expand(node);
 
-		// Generate successor nodes from the current node
-		expand(node);
+			// Clean up nodes not on the solution path
+			while (node != NULL && !node->hasChildren())
+			{
+				SearchNode* parent = node->getParent();
+				if (parent != NULL)
+					parent->decChildCount();
+				delete node;
+				node = parent;
+			}
+		}
 	}
 	std::cout << "No solution found" << std::endl;
 }

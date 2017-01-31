@@ -20,7 +20,7 @@ BridgeState::BridgeState(const BridgeState &bs)
 	torchSide = bs.torchSide;
 	peopleTimes = bs.peopleTimes;
 	peopleSides = new BridgeSide[numPeople];
-	std::memcpy(peopleSides, bs.peopleSides, sizeof(peopleSides) * numPeople);
+	std::memcpy(peopleSides, bs.peopleSides, sizeof(BridgeSide) * numPeople);
 }
 
 BridgeState::~BridgeState()

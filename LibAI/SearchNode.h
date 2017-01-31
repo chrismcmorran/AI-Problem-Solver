@@ -11,16 +11,21 @@ namespace AI {
 	class SearchNode {
 		public:
 			SearchNode(const State* state, int cost=0, Action* generatingAction=NULL, SearchNode* parent=NULL);
+			~SearchNode();
 			SearchNode* getParent();
 			const State* getState();
 			Action* getGeneratingAction();
 			int getCostFromRoot();
+			bool hasChildren();
+			void incChildCount();
+			void decChildCount();
 
 		private:
 			SearchNode* parent;
 			const State* state;
 			Action* generatingAction;
 			int costFromRoot;
+			int children;
 	};
 }
 

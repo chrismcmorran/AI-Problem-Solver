@@ -8,6 +8,12 @@ SearchNode::SearchNode(const State* state, int cost, Action* generatingAction, S
 	this->costFromRoot = cost;
 	this->generatingAction = generatingAction;
 	this->parent = parent;
+	this->children = 0;
+}
+
+SearchNode::~SearchNode()
+{
+	delete generatingAction;
 }
 
 SearchNode* SearchNode::getParent()
@@ -28,4 +34,19 @@ Action* SearchNode::getGeneratingAction()
 int SearchNode::getCostFromRoot()
 {
 	return costFromRoot;
+}
+
+bool SearchNode::hasChildren()
+{
+	return (children > 0);
+}
+
+void SearchNode::incChildCount()
+{
+	++children;
+}
+
+void SearchNode::decChildCount()
+{
+	--children;
 }

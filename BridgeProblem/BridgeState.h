@@ -17,7 +17,7 @@ namespace BridgeProblem {
 		public:
 			BridgeState(std::vector<int>* peopleTimes, BridgeSide startingSide);
 			BridgeState(const BridgeState &bs);
-			~BridgeState();
+			virtual ~BridgeState();
 
 			BridgeSide getPersonSide(int i) const;
 			int getPersonTime(int i) const;

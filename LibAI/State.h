@@ -12,6 +12,7 @@ namespace AI {
 			virtual unsigned long getStateCode() const = 0;
 			virtual void getActions(std::vector<Action*>& actions) const = 0;
 			virtual std::string describe() const = 0;
+			virtual ~State() {};
 
 			bool operator<(const State& other) const;
 			bool operator>(const State& other) const;
