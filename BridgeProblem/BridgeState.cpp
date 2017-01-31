@@ -1,3 +1,4 @@
+#include <cstring>
 #include <sstream>
 #include "BridgeAction.h"
 #include "BridgeState.h"
@@ -19,7 +20,7 @@ BridgeState::BridgeState(const BridgeState &bs)
 	torchSide = bs.torchSide;
 	peopleTimes = bs.peopleTimes;
 	peopleSides = new BridgeSide[numPeople];
-	memcpy(peopleSides, bs.peopleSides, sizeof(peopleSides) * numPeople);
+	std::memcpy(peopleSides, bs.peopleSides, sizeof(peopleSides) * numPeople);
 }
 
 BridgeState::~BridgeState()
