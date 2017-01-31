@@ -1,7 +1,7 @@
 #ifndef _BRIDGE_ACTION_H
 #define _BRIDGE_ACTION_H
 
-#include "../AIUtils/Action.h"
+#include "../LibAI/Action.h"
 #include "BridgeState.h"
 #include <string>
 

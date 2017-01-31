@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../AIUtils/Puzzle.h"
+#include "../LibAI/Puzzle.h"
 #include "BridgeState.h"
 
 using namespace BridgeProblem;

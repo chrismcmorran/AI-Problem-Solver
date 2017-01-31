@@ -2,7 +2,7 @@
 #define _BRIDGE_STATE_H
 
 #include <vector>
-#include "../AIUtils/State.h"
+#include "../LibAI/State.h"
 
 namespace BridgeProblem {
 	class BridgeAction;

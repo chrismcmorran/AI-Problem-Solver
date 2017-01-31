@@ -1,6 +1,7 @@
 #ifndef _STATE_H
 #define _STATE_H
 
+#include <string>
 #include <vector>
 
 namespace AI {
