@@ -24,7 +24,7 @@ bool State::operator>=(const State& other) const
 
 bool State::operator==(const State& other) const
 {
-	return !operator<(other);
+	return !operator<(other) && !operator>(other);
 }
 
 bool State::operator!=(const State& other) const
