@@ -5,12 +5,12 @@
 
 using namespace TileProblem;
 
-TileAction::TileAction(short x1, short y1, short x2, short y2)
+TileAction::TileAction(short row1, short col1, short row2, short col2)
 {
-	this->x1 = x1;
-	this->y1 = y1;
-	this->x2 = x2;
-	this->y2 = y2;
+	this->row1 = row1;
+	this->col1 = col1;
+	this->row2 = row2;
+	this->col2 = col2;
 }
 
 int TileAction::execute(const AI::State* state, AI::State** outState)
@@ -19,10 +19,10 @@ int TileAction::execute(const AI::State* state, AI::State** outState)
 	TileState* newState = new TileState(*static_cast<const TileState*>(state));
 
 	// Swap tiles
-	short t1 = newState->getTileValue(x1, y1);
-	short t2 = newState->getTileValue(x2, y2);
-	newState->setTileValue(x1, y1, t2);
-	newState->setTileValue(x2, y2, t1);
+	short t1 = newState->getTileValue(row1, col1);
+	short t2 = newState->getTileValue(row2, col2);
+	newState->setTileValue(row1, col1, t2);
+	newState->setTileValue(row2, col2, t1);
 	*outState = newState;
 
 	// Cost = number of moves
@@ -45,8 +45,8 @@ std::string TileAction::describe(const AI::State* s)
 	// Assumes that s is always a TileState
 	const TileState* ts = static_cast<const TileState*>(s);
 
-	short t1 = ts->getTileValue(x1, y1);
-	short t2 = ts->getTileValue(x2, y2);
+	short t1 = ts->getTileValue(row1, col1);
+	short t2 = ts->getTileValue(row2, col2);
 
 	std::ostringstream ss;
 	ss << "Swap tile \'" << tileString(t1) << "\' with tile \'" << tileString(t2) << "\'.";

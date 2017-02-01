@@ -17,7 +17,7 @@ using namespace TileProblem;
    -Any tile that is adjacent or diagonal to the blank space can slide into it
    -Two non-blank tiles can be swapped as per the chess "horse move" */
 
-static int getInt(std::string prompt)
+static int getInt(std::string prompt, int min, int max)
 {
 	// Get int from user and validate input
 	std::string input;
@@ -30,7 +30,7 @@ static int getInt(std::string prompt)
 		std::stringstream ss(input);
 		ss >> i;
 
-		if (ss.fail())
+		if (ss.fail() || i < min || i > max)
 			std::cout << "Invalid input. ";
 		else
 			return i;
@@ -39,8 +39,27 @@ static int getInt(std::string prompt)
 
 int main()
 {
-	/*int numPeople = getInt("How many people are trying to cross the bridge? ");
-	for (int i = 0; i < numPeople; ++i)
+	int boardMode = getInt("What are the dimensions of the board?\n"
+						   "1) 2x4\n"
+						   "2) 3x3\n"
+						   "3) 2x5\n", 1, 3);
+	short width, height;
+	if (boardMode == 1)
+	{
+		width = 4;
+		height = 2;
+	}
+	else if (boardMode == 2)
+	{
+		width = height = 3;
+	}
+	else
+	{
+		width = 5;
+		height = 2;
+	}
+
+	/*for (int i = 0; i < numPeople; ++i)
 	{
 		std::stringstream ss;
 		ss << "How many time units does person " << i << " take to cross the bridge? ";
@@ -49,7 +68,6 @@ int main()
 	}
 	std::cout << std::endl;*/
 
-	short width = 3, height = 3;
 	TileState* initial = new TileState(width, height, SHUFFLED);
 	TileState* goal = new TileState(width, height, SOLVED);
 

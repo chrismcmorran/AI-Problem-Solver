@@ -18,8 +18,8 @@ namespace TileProblem {
 			TileState(const TileState &ts);
 			virtual ~TileState();
 
-			short getTileValue(short x, short y) const;
-			void setTileValue(short x, short y, char v);
+			short getTileValue(short row, short col) const;
+			void setTileValue(short row, short col, char v);
 
 			virtual unsigned long getStateCode() const;
 			virtual void getActions(std::vector<AI::Action*>& actions) const;

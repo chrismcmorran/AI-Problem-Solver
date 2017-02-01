@@ -10,15 +10,15 @@ namespace TileProblem {
 	   tile problem (i.e., sliding/swapping tiles) */
 	class TileAction : public AI::Action {
 		public:
-			TileAction(short x1, short y1, short x2, short y2);
+			TileAction(short row1, short col1, short row2, short col2);
 			virtual int execute(const AI::State* inState, AI::State** outState);
 			virtual std::string describe(const AI::State* s);
 
 		private:
-			short x1;
-			short y1;
-			short x2;
-			short y2;
+			short row1;
+			short col1;
+			short row2;
+			short col2;
 	};
 }
 

@@ -42,15 +42,15 @@ TileState::~TileState()
 	delete[] board;
 }
 
-short TileState::getTileValue(short x, short y) const
+short TileState::getTileValue(short row, short col) const
 {
-	return board[x + (y * boardWidth)];
+	return board[col + (row * boardWidth)];
 }
 
 
-void TileState::setTileValue(short x, short y, char v)
+void TileState::setTileValue(short row, short col, char v)
 {
-	board[x + (y * boardWidth)] = v;
+	board[col + (row * boardWidth)] = v;
 }
 
 unsigned long TileState::getStateCode() const
@@ -64,22 +64,22 @@ unsigned long TileState::getStateCode() const
 
 void TileState::getActions(std::vector<AI::Action*>& actions) const
 {
-	for (short y = 0; y < boardHeight; ++y)
+	for (short row = 0; row < boardHeight; ++row)
 	{
-		for (short x = 0; x < boardWidth; ++x)
+		for (short col = 0; col < boardWidth; ++col)
 		{
-			if (getTileValue(x, y) == 0)
+			if (getTileValue(row, col) == 0)
 			{
 				// Found blank tile
 				// TODO: diagonal and horse move
-				if (x > 0)
-					actions.push_back(new TileAction(x, y, x-1, y));
-				if (x < boardWidth-1)
-					actions.push_back(new TileAction(x, y, x+1, y));
-				if (y > 0)
-					actions.push_back(new TileAction(x, y, x, y-1));
-				if (y < boardHeight-1)
-					actions.push_back(new TileAction(x, y, x, y+1));
+				if (col > 0)
+					actions.push_back(new TileAction(row, col, row, col-1));
+				if (col < boardWidth-1)
+					actions.push_back(new TileAction(row, col, row, col+1));
+				if (row > 0)
+					actions.push_back(new TileAction(row, col, row-1, col));
+				if (row < boardHeight-1)
+					actions.push_back(new TileAction(row, col, row+1, col));
 				break;
 			}
 		}
@@ -109,14 +109,14 @@ std::string TileState::describe() const
 {
 	// Draws the current state
 	std::ostringstream ss;
-	for (short y = 0; y < boardHeight; ++y)
+	for (short row = 0; row < boardHeight; ++row)
 	{
-		for (short x = 0; x < boardWidth; ++x)
+		for (short col = 0; col < boardWidth; ++col)
 			ss << " ---";
 		ss << std::endl;
-		for (short x = 0; x < boardWidth; ++x)
+		for (short col = 0; col < boardWidth; ++col)
 		{
-			int val = getTileValue(x, y);
+			int val = getTileValue(row, col);
 			ss << "| ";
 			if (val == 0)
 				ss << " ";
@@ -126,7 +126,7 @@ std::string TileState::describe() const
 		}
 		ss << "|" << std::endl;
 	}
-	for (short x = 0; x < boardWidth; ++x)
+	for (short col = 0; col < boardWidth; ++col)
 			ss << " ---";
 	return ss.str();
 }
