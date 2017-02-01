@@ -17,7 +17,7 @@ using namespace TileProblem;
    -Any tile that is adjacent or diagonal to the blank space can slide into it
    -Two non-blank tiles can be swapped as per the chess "horse move" */
 
-static int getInt(std::string prompt)
+static int getInt(std::string prompt, int min)
 {
 	// Get int from user and validate input
 	std::string input;
@@ -30,7 +30,7 @@ static int getInt(std::string prompt)
 		std::stringstream ss(input);
 		ss >> i;
 
-		if (ss.fail() || i < 1)
+		if (ss.fail() || i < min)
 			std::cout << "Invalid input. ";
 		else
 			return i;
@@ -39,20 +39,23 @@ static int getInt(std::string prompt)
 
 int main()
 {
-	short height = getInt("What is the board height? ");
-	short width = getInt("What is the board width? ");
+	short height = getInt("What is the board height? ", 1);
+	short width = getInt("What is the board width? ", 1);
+	TileState* initial = new TileState(width, height);
+	TileState* goal = new TileState(width, height);
 
-	/*for (int i = 0; i < numPeople; ++i)
+	// Populate board
+	for (short row = 0; row < height; ++row)
 	{
-		std::stringstream ss;
-		ss << "How many time units does person " << i << " take to cross the bridge? ";
-		peopleTimes.push_back(getInt(ss.str()));
-		ss.clear();
-	}*/
+		for (short col = 0; col < width; ++col)
+		{
+			std::stringstream ss;
+			short val;
+			ss << "Which tile is at (" << row << "," << col << ")? ";
+			initial->setTileValue(row, col, getInt(ss.str(), 0));
+		}
+	}
 	std::cout << std::endl;
-
-	TileState* initial = new TileState(width, height, SHUFFLED);
-	TileState* goal = new TileState(width, height, SOLVED);
 
 	AI::Puzzle tilePuzzle(initial, goal, AI::BREADTH_FIRST);
 	tilePuzzle.solve();

@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <cstring>
 #include <sstream>
 #include "TileAction.h"
@@ -6,7 +5,7 @@
 
 using namespace TileProblem;
 
-TileState::TileState(short boardWidth, short boardHeight, TileStateType stateType)
+TileState::TileState(short boardWidth, short boardHeight)
 {
 	int totalTiles = boardHeight * boardWidth;
 	char num = 1;
@@ -14,17 +13,12 @@ TileState::TileState(short boardWidth, short boardHeight, TileStateType stateTyp
 	this->boardWidth = boardWidth;
 	this->boardHeight = boardHeight;
 
+	// Goal state
 	board = new short[totalTiles];
 	for (int i = 0; i < totalTiles; ++i)
 	{
 		board[i] = num;
 		num = ((num + 1) % totalTiles);
-	}
-
-	if (stateType == SHUFFLED)
-	{
-		srand(time(NULL));
-		std::random_shuffle(&board[0], &board[totalTiles]);
 	}
 }
 

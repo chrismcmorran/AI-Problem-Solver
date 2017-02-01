@@ -6,15 +6,10 @@
 namespace TileProblem {
 	class TileAction;
 
-	enum TileStateType {
-		SHUFFLED,
-		SOLVED
-	};
-
 	// A state of the tile problem
 	class TileState : public AI::State {
 		public:
-			TileState(short boardWidth, short boardHeight, TileStateType stateType);
+			TileState(short boardWidth, short boardHeight);
 			TileState(const TileState &ts);
 			virtual ~TileState();
 
