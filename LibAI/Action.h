@@ -10,7 +10,7 @@ namespace AI {
 		public:
 			// Returns the cost of the action
 			virtual int execute(const State* inState, State** outState) = 0;
-			virtual std::string describe() = 0;
+			virtual std::string describe(const State* s=NULL) = 0;
 	};
 }
 

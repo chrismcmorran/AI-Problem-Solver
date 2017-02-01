@@ -12,7 +12,7 @@ namespace BridgeProblem {
 		public:
 			BridgeAction(BridgeSide dest, int p1, int p2=-1);
 			virtual int execute(const AI::State* inState, AI::State** outState);
-			virtual std::string describe();
+			virtual std::string describe(const AI::State* s);
 
 		private:
 			int person1, person2;

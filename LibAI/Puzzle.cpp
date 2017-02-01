@@ -11,9 +11,15 @@ using namespace AI;
 
 Fringe<SearchNode*>* fringe;
 std::set<const State*, PointerComp<State>> seenStates;
+std::set<SearchNode*> allocatedNodes;
 
 Puzzle::Puzzle(State* initialState, State* goalState, SearchType searchType)
 {
+	SearchNode* rootNode = new SearchNode(initialState);
+	allocatedNodes.insert(rootNode);
+	seenStates.insert(initialState);
+	this->goalState = goalState;
+
 	if (searchType == BREADTH_FIRST)
 		fringe = new BreadthFirstFringe<SearchNode*>;
 	else if (searchType == DEPTH_FIRST)
@@ -21,24 +27,19 @@ Puzzle::Puzzle(State* initialState, State* goalState, SearchType searchType)
 	else
 		fringe = NULL;
 
-	fringe->push(new SearchNode(initialState));
-	seenStates.insert(initialState);
-	this->goalState = goalState;
+	fringe->push(rootNode);
 }
 
 Puzzle::~Puzzle()
 {
-	std::set<const State*, PointerComp<State>>::iterator it;
-	for (it = seenStates.begin(); it != seenStates.end(); ++it)
-		delete *it;
-	delete goalState;
-
-	while(!fringe->empty())
-	{
-		delete fringe->front();
-		fringe->pop();
-	}
+	std::set<const State*, PointerComp<State>>::iterator stateIt;
+	std::set<SearchNode*>::iterator nodeIt;
+	for (stateIt = seenStates.begin(); stateIt != seenStates.end(); ++stateIt)
+		delete *stateIt;
+	for (nodeIt = allocatedNodes.begin(); nodeIt != allocatedNodes.end(); ++nodeIt)
+		delete *nodeIt;
 	delete fringe;
+	delete goalState;
 }
 
 void Puzzle::expand(SearchNode* node)
@@ -58,7 +59,9 @@ void Puzzle::expand(SearchNode* node)
 		if (seenStates.find(generatedState) == seenStates.end())
 		{
 			// State has not been seen before
-			fringe->push(new SearchNode(generatedState, node->getCostFromRoot() + cost, action, node));
+			SearchNode* newNode = new SearchNode(generatedState, node->getCostFromRoot() + cost, action, node);
+			fringe->push(newNode);
+			allocatedNodes.insert(newNode);
 			seenStates.insert(generatedState);
 			node->incChildCount();
 		}
@@ -86,11 +89,11 @@ static void outputSolution(SearchNode* node, std::ostream& out)
 	for (it = path.begin(); it != path.end(); ++it)
 	{
 		AI::Action* a = (*it)->getGeneratingAction();
+		const AI::State* s = (*it)->getState();
 		if (a != NULL)
-			out << a->describe() << std::endl;
-		out << (*it)->getState()->describe() << std::endl;
+			out << a->describe(s) << std::endl;
+		out << s->describe() << std::endl;
 		out << "Cumulative cost: " << (*it)->getCostFromRoot() << std::endl << std::endl;
-		delete *it;
 	}
 }
 
@@ -120,6 +123,7 @@ void Puzzle::solve()
 				if (parent != NULL)
 					parent->decChildCount();
 				delete node;
+				allocatedNodes.erase(node);
 				node = parent;
 			}
 		}

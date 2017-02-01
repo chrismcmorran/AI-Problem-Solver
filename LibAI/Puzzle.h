@@ -34,6 +34,7 @@ namespace AI {
 		private:
 			Fringe<SearchNode*>* fringe;
 			std::set<const State*, PointerComp<State>> seenStates;
+			std::set<SearchNode*> allocatedNodes;
 			const State* goalState;
 
 			void expand(SearchNode* node);

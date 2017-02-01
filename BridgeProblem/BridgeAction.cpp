@@ -33,7 +33,7 @@ int BridgeAction::execute(const AI::State* state, AI::State** outState)
 	return cost;
 }
 
-std::string BridgeAction::describe()
+std::string BridgeAction::describe(const AI::State* s)
 {
 	// Assumes at least one person will always be moved
 	std::ostringstream ss;
