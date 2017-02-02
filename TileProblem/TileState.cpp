@@ -52,9 +52,20 @@ unsigned long TileState::getStateCode() const
 	unsigned long code = 1;
 	int totalTiles = boardWidth * boardHeight;
 	for (int i = 0; i < totalTiles; ++i)
-		code += (code * 31) + board[i];
+		code += (code * 37) + board[i];
 	return code;
 }
+
+static short KNIGHT_MOVE_OFFSETS[8][2] = {
+	{-2, -1},
+	{-2, 1},
+	{2, -1},
+	{2, 1},
+	{-1, -2},
+	{-1, 2},
+	{1, -2},
+	{1, 2}
+};
 
 void TileState::getActions(std::vector<AI::Action*>& actions) const
 {
@@ -65,38 +76,44 @@ void TileState::getActions(std::vector<AI::Action*>& actions) const
 			if (getTileValue(row, col) == 0)
 			{
 				// Found blank tile
-				// TODO: diagonal and horse move
 				if (col > 0)
 					actions.push_back(new TileAction(row, col, row, col-1));
 				if (col < boardWidth-1)
 					actions.push_back(new TileAction(row, col, row, col+1));
 				if (row > 0)
+				{
+					// Top, top-left, and top-right
 					actions.push_back(new TileAction(row, col, row-1, col));
+					if (col > 0)
+						actions.push_back(new TileAction(row, col, row-1, col-1));
+					if (col < boardWidth-1)
+						actions.push_back(new TileAction(row, col, row-1, col+1));
+				}
 				if (row < boardHeight-1)
+				{
+					// Bottom, bottom-left, and bottom-right
 					actions.push_back(new TileAction(row, col, row+1, col));
+					if (col > 0)
+						actions.push_back(new TileAction(row, col, row+1, col-1));
+					if (col < boardWidth-1)
+						actions.push_back(new TileAction(row, col, row+1, col+1));
+				}
 				break;
+			}
+			else
+			{
+				// L-shaped "knight" moves for non-blank tiles
+				for (short i = 0; i < 8; ++i)
+				{
+					short newRow = row + KNIGHT_MOVE_OFFSETS[i][0];
+					short newCol = col + KNIGHT_MOVE_OFFSETS[i][1];
+					short val = getTileValue(newRow, newCol);
+					if (newRow > 0 && newRow < boardHeight && newCol > 0 && newCol < boardWidth && val != 0)
+						actions.push_back(new TileAction(row, col, newRow, newCol));
+				}
 			}
 		}
 	}
-
-	/*BridgeSide dest = (torchSide == LEFT) ? RIGHT : LEFT;
-	std::vector<int> people;
-	unsigned int i;
-
-	// Which people can be moved (who's on the same side as the torch)?
-	for (i = 0; i < peopleTimes->size(); ++i)
-	{
-		if (peopleSides[i] == torchSide)
-			people.push_back(i);
-	}
-
-	// Generate all possible moves that can be made from the current state
-	genMoves(actions, people, dest, 0, -1);
-	for (i = 0; i < people.size(); ++i)
-	{
-		int p2 = people.at(i);
-		genMoves(actions, people, dest, i+1, p2);
-	}*/
 }
 
 std::string TileState::describe() const
