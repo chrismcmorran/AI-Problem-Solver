@@ -1,58 +1,37 @@
-#include <string>
-#include <sstream>
+#include <climits>
 #include <iostream>
+#include <sstream>
+#include <string>
 #include <vector>
 
-#include "../LibAI/Puzzle.h"
+#include "../LibAI/Util.h"
+
+#include "BridgeProblem.h"
 #include "BridgeState.h"
 
 using namespace BridgeProblem;
 
-/* The bridge problem:
+std::vector<int> peopleTimes;
 
-   A number of people must move over a narrow bridge at night. The bridge can
-   only hold two people at a time and a torch has to be used to cross the bridge.
-   Each person takes a certain amount of time to cross the bridge. When two persons
-   are crossing the bridge together, they both move at the pace dictated by the
-   slower person. The task is get the group across the bridge in the minimum time. */
-
-static int getInt(std::string prompt)
+Problem::Problem(AI::SearchType searchType) : AI::Problem(searchType)
 {
-	// Get int from user and validate input
-	std::string input;
-	int i;
-
-	while (true)
-	{
-		std::cout << prompt;
-		std::cin >> input;
-		std::stringstream ss(input);
-		ss >> i;
-
-		if (ss.fail())
-			std::cout << "Invalid input. ";
-		else
-			return i;
-	}
-}
-
-int main()
-{
-	std::vector<int> peopleTimes;
-	int numPeople = getInt("How many people are trying to cross the bridge? ");
+	int numPeople = AI::Util::getInt("How many people are trying to cross the bridge? ", 0, BridgeState::getMaxPeople());
 	for (int i = 0; i < numPeople; ++i)
 	{
 		std::stringstream ss;
 		ss << "How many time units does person " << i << " take to cross the bridge? ";
-		peopleTimes.push_back(getInt(ss.str()));
+		peopleTimes.push_back(AI::Util::getInt(ss.str(), INT_MIN, INT_MAX));
 		ss.clear();
 	}
 	std::cout << std::endl;
+}
 
-	BridgeState* initial = new BridgeState(&peopleTimes, LEFT);
-	BridgeState* goal = new BridgeState(&peopleTimes, RIGHT);
+AI::State* Problem::genInitialState()
+{
+	return new BridgeState(&peopleTimes, LEFT);
+}
 
-	AI::Puzzle bridgePuzzle(initial, goal, AI::BREADTH_FIRST);
-	bridgePuzzle.solve();
-	return 0;
+AI::State* Problem::genGoalState()
+{
+	return new BridgeState(&peopleTimes, RIGHT);
 }

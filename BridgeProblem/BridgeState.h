@@ -28,6 +28,7 @@ namespace BridgeProblem {
 			virtual unsigned long getStateCode() const;
 			virtual void getActions(std::vector<AI::Action*>& actions) const;
 			virtual std::string describe() const;
+			static int getMaxPeople();
 
 		private:
 			const std::vector<int>* peopleTimes;

@@ -42,7 +42,7 @@ short TileState::getTileValue(short row, short col) const
 }
 
 
-void TileState::setTileValue(short row, short col, char v)
+void TileState::setTileValue(short row, short col, short v)
 {
 	board[col + (row * boardWidth)] = v;
 }

@@ -133,3 +133,10 @@ std::string BridgeState::describe() const
 		ss << rightPeople.at(i) << " ";
 	return ss.str();
 }
+
+int BridgeState::getMaxPeople()
+{
+	/* States are hashed using the bits in a long int
+	   to represent left/right sides of the bridge */
+	return (sizeof(long) * 8) - 1;
+}

@@ -1,8 +1,7 @@
-#ifndef _PUZZLE_H
-#define _PUZZLE_H
+#ifndef _PROBLEM_H
+#define _PROBLEM_H
 
 #include <ostream>
-#include <queue>  // For now
 #include <set>
 #include "State.h"
 #include "SearchNode.h"
@@ -14,8 +13,8 @@ namespace AI {
 		DEPTH_FIRST
 	};
 
-	template <typename T>
 	// Allows std::set of pointers to be sorted using an overridden operator<
+	template <typename T>
 	struct PointerComp
 	{
 		bool operator ()(const T* a, const T* b) const
@@ -25,10 +24,10 @@ namespace AI {
 	};
 
 	// A problem to be solved using AI techniques
-	class Puzzle {
+	class Problem {
 		public:
-			Puzzle(State* initialState, State* goalState, SearchType searchType);
-			~Puzzle();
+			Problem(SearchType searchType);
+			virtual ~Problem();
 			void solve();
 
 		private:
@@ -39,6 +38,8 @@ namespace AI {
 
 			void expand(SearchNode* node);
 			bool goalReached(const State* currState);
+			virtual State* genInitialState() = 0;
+			virtual State* genGoalState() = 0;
 	};
 }
 

@@ -2,7 +2,7 @@
 #include <queue>
 #include <string>
 #include <iostream>
-#include "Puzzle.h"
+#include "Problem.h"
 #include "Action.h"
 #include "BreadthFirstFringe.h"
 #include "DepthFirstFringe.h"
@@ -13,24 +13,17 @@ Fringe<SearchNode*>* fringe;
 std::set<const State*, PointerComp<State>> seenStates;
 std::set<SearchNode*> allocatedNodes;
 
-Puzzle::Puzzle(State* initialState, State* goalState, SearchType searchType)
+Problem::Problem(SearchType searchType)
 {
-	SearchNode* rootNode = new SearchNode(initialState);
-	allocatedNodes.insert(rootNode);
-	seenStates.insert(initialState);
-	this->goalState = goalState;
-
 	if (searchType == BREADTH_FIRST)
 		fringe = new BreadthFirstFringe<SearchNode*>;
 	else if (searchType == DEPTH_FIRST)
 		fringe = new DepthFirstFringe<SearchNode*>;
 	else
 		fringe = NULL;
-
-	fringe->push(rootNode);
 }
 
-Puzzle::~Puzzle()
+Problem::~Problem()
 {
 	std::set<const State*, PointerComp<State>>::iterator stateIt;
 	std::set<SearchNode*>::iterator nodeIt;
@@ -42,7 +35,7 @@ Puzzle::~Puzzle()
 	delete goalState;
 }
 
-void Puzzle::expand(SearchNode* node)
+void Problem::expand(SearchNode* node)
 {
 	// Generate successor actions
 	std::vector<Action*> actions;
@@ -97,8 +90,15 @@ static void outputSolution(SearchNode* node, std::ostream& out)
 	}
 }
 
-void Puzzle::solve()
+void Problem::solve()
 {
+	State* initialState = genInitialState();
+	SearchNode* rootNode = new SearchNode(initialState);
+	seenStates.insert(initialState);
+	allocatedNodes.insert(rootNode);
+	fringe->push(rootNode);
+	goalState = genGoalState();
+
 	while(!fringe->empty())
 	{
 		SearchNode* node = fringe->front();

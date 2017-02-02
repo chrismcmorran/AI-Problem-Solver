@@ -14,7 +14,7 @@ namespace TileProblem {
 			virtual ~TileState();
 
 			short getTileValue(short row, short col) const;
-			void setTileValue(short row, short col, char v);
+			void setTileValue(short row, short col, short v);
 
 			virtual unsigned long getStateCode() const;
 			virtual void getActions(std::vector<AI::Action*>& actions) const;
@@ -22,7 +22,7 @@ namespace TileProblem {
 
 		private:
 			short* board;
-			char boardWidth, boardHeight;
+			short boardWidth, boardHeight;
 	};
 }
 
