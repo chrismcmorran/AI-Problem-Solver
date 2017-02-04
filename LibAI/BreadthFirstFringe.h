@@ -6,31 +6,15 @@
 
 namespace AI {
 	/* Container for the fringe which facilitates breadth-first search (a queue) */
-	template <typename T>
-	class BreadthFirstFringe : public Fringe<T> {
+	class BreadthFirstFringe : public Fringe {
 		private:
-			std::queue<T> container;
+			std::queue<SearchNode*> container;
 
 		public:
-			virtual void push(const T& val)
-			{
-				container.push(val);
-			}
-
-			virtual void pop()
-			{
-				container.pop();
-			}
-
-			virtual T& front()
-			{
-				return container.front();
-			}
-
-			virtual bool empty()
-			{
-				return container.empty();
-			}
+			virtual void push(SearchNode* val);
+			virtual void pop();
+			virtual SearchNode* front();
+			virtual bool empty();
 	};
 }
 

@@ -12,6 +12,12 @@ namespace BridgeProblem {
 		RIGHT
 	};
 
+	enum BridgeHeuristic {
+		LEFT_PEOPLE = 1,
+		RIGHT_TIMES,
+		AVERAGE
+	};
+
 	// A state of the bridge problem
 	class BridgeState : public AI::State {
 		public:
@@ -28,12 +34,15 @@ namespace BridgeProblem {
 			virtual unsigned long getStateCode() const;
 			virtual void getActions(std::vector<AI::Action*>& actions) const;
 			virtual std::string describe() const;
+			virtual int estimateGoalDist() const;
 			static int getMaxPeople();
+			static void setHeuristic(BridgeHeuristic heuristic);
 
 		private:
 			const std::vector<int>* peopleTimes;
 			BridgeSide* peopleSides;
 			BridgeSide torchSide;
+			static BridgeHeuristic heuristic;
 	};
 }
 

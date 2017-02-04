@@ -6,31 +6,15 @@
 
 namespace AI {
 	/* Container for the fringe which facilitates depth-first search (a stack) */
-	template <typename T>
-	class DepthFirstFringe : public Fringe<T> {
+	class DepthFirstFringe : public Fringe {
 		private:
-			std::stack<T> container;
+			std::stack<SearchNode*> container;
 
 		public:
-			virtual void push(const T& val)
-			{
-				container.push(val);
-			}
-
-			virtual void pop()
-			{
-				container.pop();
-			}
-
-			virtual T& front()
-			{
-				return container.top();
-			}
-
-			virtual bool empty()
-			{
-				return container.empty();
-			}
+			virtual void push(SearchNode* val);
+			virtual void pop();
+			virtual SearchNode* front();
+			virtual bool empty();
 	};
 }
 

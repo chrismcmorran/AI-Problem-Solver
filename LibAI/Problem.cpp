@@ -6,31 +6,24 @@
 #include "Action.h"
 #include "BreadthFirstFringe.h"
 #include "DepthFirstFringe.h"
+#include "AStarFringe.h"
 
 using namespace AI;
-
-Fringe<SearchNode*>* fringe;
-std::set<const State*, PointerComp<State>> seenStates;
-std::set<SearchNode*> allocatedNodes;
 
 Problem::Problem(SearchType searchType)
 {
 	if (searchType == BREADTH_FIRST)
-		fringe = new BreadthFirstFringe<SearchNode*>;
+		fringe = new BreadthFirstFringe();
 	else if (searchType == DEPTH_FIRST)
-		fringe = new DepthFirstFringe<SearchNode*>;
+		fringe = new DepthFirstFringe();
 	else
-		fringe = NULL;
+		fringe = new AStarFringe();
+
+	this->searchType = searchType;
 }
 
 Problem::~Problem()
 {
-	std::set<const State*, PointerComp<State>>::iterator stateIt;
-	std::set<SearchNode*>::iterator nodeIt;
-	for (stateIt = seenStates.begin(); stateIt != seenStates.end(); ++stateIt)
-		delete *stateIt;
-	for (nodeIt = allocatedNodes.begin(); nodeIt != allocatedNodes.end(); ++nodeIt)
-		delete *nodeIt;
 	delete fringe;
 	delete goalState;
 }
@@ -44,25 +37,15 @@ void Problem::expand(SearchNode* node)
 
 	for (unsigned int i = 0; i < actions.size(); ++i)
 	{
-		// Add valid successor states to the fringe
 		Action* action = actions.at(i);
 		State* generatedState;
 		int cost = action->execute(state, &generatedState);
+		int costFromRoot = node->getCostFromRoot() + action->execute(state, &generatedState);
 
-		if (seenStates.find(generatedState) == seenStates.end())
-		{
-			// State has not been seen before
-			SearchNode* newNode = new SearchNode(generatedState, node->getCostFromRoot() + cost, action, node);
-			fringe->push(newNode);
-			allocatedNodes.insert(newNode);
-			seenStates.insert(generatedState);
-			node->incChildCount();
-		}
-		else
-		{
-			delete generatedState;
-			delete action;
-		}
+		SearchNode* newNode = new SearchNode(generatedState, costFromRoot, action, node);
+		fringe->push(newNode);
+		allocatedNodes.insert(newNode);
+		node->incChildCount();
 	}
 }
 
@@ -90,11 +73,24 @@ static void outputSolution(SearchNode* node, std::ostream& out)
 	}
 }
 
+void Problem::checkLeafNode(SearchNode* node)
+{
+	// Clean up nodes not on the solution path
+	while (node != NULL && !node->hasChildren())
+	{
+		SearchNode* parent = node->getParent();
+		if (parent != NULL)
+			parent->decChildCount();
+		delete node;
+		allocatedNodes.erase(node);
+		node = parent;
+	}
+}
+
 void Problem::solve()
 {
 	State* initialState = genInitialState();
 	SearchNode* rootNode = new SearchNode(initialState);
-	seenStates.insert(initialState);
 	allocatedNodes.insert(rootNode);
 	fringe->push(rootNode);
 	goalState = genGoalState();
@@ -105,27 +101,34 @@ void Problem::solve()
 		const AI::State* state = node->getState();
 		fringe->pop();
 
+		// Node has been seen before
+		if (seenStates.find(state) != seenStates.end())
+		{
+			checkLeafNode(node);
+			delete state;
+			continue;
+		}
+		seenStates.insert(state);
+
 		if (*state == *goalState)
 		{
 			// Solution found
 			outputSolution(node, std::cout);
+			while (!fringe->empty())
+			{
+				const State* s = fringe->front()->getState();
+				fringe->pop();
+				delete s;
+			}
+			allocatedNodes.clear();
+			seenStates.clear();
 			return;
 		}
 		else
 		{
 			// Generate successor nodes from the current node
 			expand(node);
-
-			// Clean up nodes not on the solution path
-			while (node != NULL && !node->hasChildren())
-			{
-				SearchNode* parent = node->getParent();
-				if (parent != NULL)
-					parent->decChildCount();
-				delete node;
-				allocatedNodes.erase(node);
-				node = parent;
-			}
+			checkLeafNode(node);
 		}
 	}
 	std::cout << "No solution found" << std::endl;

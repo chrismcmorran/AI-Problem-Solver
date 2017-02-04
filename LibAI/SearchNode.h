@@ -12,11 +12,14 @@ namespace AI {
 		public:
 			SearchNode(const State* state, int cost=0, Action* generatingAction=NULL, SearchNode* parent=NULL);
 			~SearchNode();
-			SearchNode* getParent();
-			const State* getState();
-			Action* getGeneratingAction();
-			int getCostFromRoot();
-			bool hasChildren();
+			SearchNode* getParent() const;
+			void setParent(SearchNode* parent);
+			const State* getState() const;
+			Action* getGeneratingAction() const;
+			void setGeneratingAction(Action* action);
+			int getCostFromRoot() const;
+			void setCostFromRoot(int cost);
+			bool hasChildren() const;
 			void incChildCount();
 			void decChildCount();
 

@@ -13,7 +13,6 @@ int main()
 {
 	int probNum, searchNum;
 	AI::Problem* problem;
-	AI::SearchType searchType;
 	
 	probNum = AI::Util::getInt("Which problem do you want to solve?\n"
 							   "1) Bridge problem\n"
@@ -21,13 +20,14 @@ int main()
 	std::cout << std::endl;
 	searchNum = AI::Util::getInt("Which search strategy do you want to use?\n"
 								 "1) Breadth-first search\n"
-								 "2) Depth-first search\n", 1, 2);
+								 "2) Depth-first search\n"
+								 "3) A*\n", 1, 3);
 	std::cout << std::endl;
-	searchType = (searchNum == 1) ? AI::BREADTH_FIRST : AI::DEPTH_FIRST;
+
 	if (probNum == 1)
-		problem = new BridgeProblem::Problem(searchType);
+		problem = new BridgeProblem::Problem((AI::SearchType)searchNum);
 	else
-		problem = new TileProblem::Problem(searchType);
+		problem = new TileProblem::Problem((AI::SearchType)searchNum);
 	problem->solve();
 	delete problem;
 	return 0;

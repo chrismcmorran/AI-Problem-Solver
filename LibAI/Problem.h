@@ -9,8 +9,9 @@
 
 namespace AI {
 	enum SearchType {
-		BREADTH_FIRST,
-		DEPTH_FIRST
+		BREADTH_FIRST = 1,
+		DEPTH_FIRST,
+		A_STAR
 	};
 
 	// Allows std::set of pointers to be sorted using an overridden operator<
@@ -31,12 +32,14 @@ namespace AI {
 			void solve();
 
 		private:
-			Fringe<SearchNode*>* fringe;
+			Fringe* fringe;
 			std::set<const State*, PointerComp<State>> seenStates;
 			std::set<SearchNode*> allocatedNodes;
 			const State* goalState;
+			SearchType searchType;
 
 			void expand(SearchNode* node);
+			void checkLeafNode(SearchNode* node);
 			bool goalReached(const State* currState);
 			virtual State* genInitialState() = 0;
 			virtual State* genGoalState() = 0;

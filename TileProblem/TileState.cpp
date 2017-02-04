@@ -1,17 +1,39 @@
 #include <cstring>
+#include <cmath>
 #include <sstream>
 #include "TileAction.h"
 #include "TileState.h"
 
 using namespace TileProblem;
 
-TileState::TileState(short boardWidth, short boardHeight)
+short TileState::boardWidth = 0, TileState::boardHeight = 0;
+TileHeuristic TileState::heuristic = MISPLACED_TILES;
+
+void TileState::setBoardDimensions(short width, short height)
+{
+	boardWidth = width;
+	boardHeight = height;
+}
+
+void TileState::setHeuristic(TileHeuristic heuristic)
+{
+	TileState::heuristic = heuristic;
+}
+
+short TileState::getBoardWidth()
+{
+	return boardWidth;
+}
+
+short TileState::getBoardHeight()
+{
+	return boardHeight;
+}
+
+TileState::TileState()
 {
 	int totalTiles = boardHeight * boardWidth;
-	char num = 1;
-
-	this->boardWidth = boardWidth;
-	this->boardHeight = boardHeight;
+	short num = 1;
 
 	// Goal state
 	board = new short[totalTiles];
@@ -25,8 +47,6 @@ TileState::TileState(short boardWidth, short boardHeight)
 TileState::TileState(const TileState &ts)
 {
 	int totalTiles = ts.boardHeight * ts.boardWidth;
-	boardWidth = ts.boardWidth;
-	boardHeight = ts.boardHeight;
 	board = new short[totalTiles];
 	std::memcpy(board, ts.board, sizeof(short) * totalTiles);
 }
@@ -140,4 +160,51 @@ std::string TileState::describe() const
 	for (short col = 0; col < boardWidth; ++col)
 			ss << " ---";
 	return ss.str();
+}
+
+int TileState::estimateGoalDist() const
+{
+	int numMisplaced = 0, manhattan = 0;
+	int totalTiles = boardHeight * boardWidth;
+
+	short num = 1;
+	for (int i = 0; i < totalTiles; ++i)
+	{
+		// Is tile misplaced?
+		if (board[i] != num)
+		{
+			// Heuristic 1: number of tiles out of place
+			if (heuristic == AVERAGE || heuristic == MISPLACED_TILES)
+				++numMisplaced;
+
+			// Heuristic 2: manhattan distance
+			if (heuristic == AVERAGE || heuristic == MANHATTAN_DISTANCE)
+			{
+				short curRow = i / boardWidth;
+				short curCol = i % boardWidth;
+				short expRow, expCol;
+
+				if (board[i] == 0)
+				{
+					// Special case
+					expRow = boardWidth-1;
+					expCol = boardHeight-1;
+				}
+				else
+				{
+					expRow = board[i] / boardWidth;
+					expCol = board[i] % boardWidth;
+				}
+				manhattan += std::abs(curRow - expRow) + std::abs(curCol - expCol);
+			}
+		}
+		num = ((num + 1) % totalTiles);
+	}
+
+	if (heuristic == MISPLACED_TILES)
+		return numMisplaced;
+	else if (heuristic == MANHATTAN_DISTANCE)
+		return manhattan;
+	else  // Average
+		return (numMisplaced + manhattan)/2;
 }

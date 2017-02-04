@@ -16,27 +16,42 @@ SearchNode::~SearchNode()
 	delete generatingAction;
 }
 
-SearchNode* SearchNode::getParent()
+SearchNode* SearchNode::getParent() const
 {
 	return parent;
 }
 
-const State* SearchNode::getState()
+void SearchNode::setParent(SearchNode* parent)
+{
+	this->parent = parent;
+}
+
+const State* SearchNode::getState() const
 {
 	return state;
 }
 
-Action* SearchNode::getGeneratingAction()
+Action* SearchNode::getGeneratingAction() const
 {
 	return generatingAction;
 }
 
-int SearchNode::getCostFromRoot()
+void SearchNode::setGeneratingAction(Action* action)
+{
+	generatingAction = action;
+}
+
+int SearchNode::getCostFromRoot() const
 {
 	return costFromRoot;
 }
 
-bool SearchNode::hasChildren()
+void SearchNode::setCostFromRoot(int cost)
+{
+	costFromRoot = cost;
+}
+
+bool SearchNode::hasChildren() const
 {
 	return (children > 0);
 }

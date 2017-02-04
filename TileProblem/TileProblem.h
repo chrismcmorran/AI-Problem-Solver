@@ -18,8 +18,6 @@ namespace TileProblem {
 			Problem(AI::SearchType searchType);
 
 		private:
-			short width, height;
-
 			virtual AI::State* genInitialState();
 			virtual AI::State* genGoalState();
 	};

@@ -5,6 +5,13 @@
 
 using namespace BridgeProblem;
 
+BridgeHeuristic BridgeState::heuristic = RIGHT_TIMES;
+
+void BridgeState::setHeuristic(BridgeHeuristic heuristic)
+{
+	BridgeState::heuristic = heuristic;
+}
+
 BridgeState::BridgeState(std::vector<int>* peopleTimes, BridgeSide startingSide)
 {
 	torchSide = startingSide;
@@ -132,6 +139,28 @@ std::string BridgeState::describe() const
 	for (i = 0; i < rightPeople.size(); ++i)
 		ss << rightPeople.at(i) << " ";
 	return ss.str();
+}
+
+int BridgeState::estimateGoalDist() const
+{
+	int leftPeople = 0, rightTimes = 0;
+	for (unsigned int i = 0; i < peopleTimes->size(); ++i)
+	{
+		// Heuristic 1: number of people on the left
+		if (peopleSides[i] == LEFT)
+			++leftPeople;
+		// Heuristic 2: sum of time of people on the right
+		else
+			rightTimes += peopleTimes->at(i);
+
+	}
+
+	if (heuristic == LEFT_PEOPLE)
+		return leftPeople;
+	else if (heuristic == RIGHT_TIMES)
+		return rightTimes;
+	else  // Average
+		return (leftPeople + rightTimes)/2;
 }
 
 int BridgeState::getMaxPeople()
