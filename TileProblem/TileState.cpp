@@ -56,6 +56,7 @@ TileState::~TileState()
 	delete[] board;
 }
 
+
 short TileState::getTileValue(short row, short col) const
 {
 	return board[col + (row * boardWidth)];
@@ -127,9 +128,13 @@ void TileState::getActions(std::vector<AI::Action*>& actions) const
 				{
 					short newRow = row + KNIGHT_MOVE_OFFSETS[i][0];
 					short newCol = col + KNIGHT_MOVE_OFFSETS[i][1];
-					short val = getTileValue(newRow, newCol);
-					if (newRow > 0 && newRow < boardHeight && newCol > 0 && newCol < boardWidth && val != 0)
-						actions.push_back(new TileAction(row, col, newRow, newCol));
+
+					if (newRow > 0 && newRow < boardHeight && newCol > 0 && newCol < boardWidth)
+					{
+						short val = getTileValue(newRow, newCol);
+						if (val != 0)
+							actions.push_back(new TileAction(row, col, newRow, newCol));
+					}
 				}
 			}
 		}

@@ -41,6 +41,7 @@ namespace AI {
 			void expand(SearchNode* node);
 			void checkLeafNode(SearchNode* node);
 			bool goalReached(const State* currState);
+			void cleanup();
 			virtual State* genInitialState() = 0;
 			virtual State* genGoalState() = 0;
 	};

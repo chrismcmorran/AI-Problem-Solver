@@ -39,7 +39,6 @@ void Problem::expand(SearchNode* node)
 	{
 		Action* action = actions.at(i);
 		State* generatedState;
-		int cost = action->execute(state, &generatedState);
 		int costFromRoot = node->getCostFromRoot() + action->execute(state, &generatedState);
 
 		SearchNode* newNode = new SearchNode(generatedState, costFromRoot, action, node);
@@ -87,6 +86,20 @@ void Problem::checkLeafNode(SearchNode* node)
 	}
 }
 
+void Problem::cleanup()
+{
+	while (!fringe->empty())
+	{
+		const State* s = fringe->front()->getState();
+		fringe->pop();
+		delete s;
+	}
+	for (std::set<SearchNode*>::iterator it = allocatedNodes.begin(); it != allocatedNodes.end(); ++it)
+		delete *it;
+	for (std::set<const State*, PointerComp<State>>::iterator it = seenStates.begin(); it != seenStates.end(); ++it)
+		delete *it;
+}
+
 void Problem::solve()
 {
 	State* initialState = genInitialState();
@@ -114,14 +127,7 @@ void Problem::solve()
 		{
 			// Solution found
 			outputSolution(node, std::cout);
-			while (!fringe->empty())
-			{
-				const State* s = fringe->front()->getState();
-				fringe->pop();
-				delete s;
-			}
-			allocatedNodes.clear();
-			seenStates.clear();
+			cleanup();
 			return;
 		}
 		else
@@ -132,4 +138,5 @@ void Problem::solve()
 		}
 	}
 	std::cout << "No solution found" << std::endl;
+	cleanup();
 }

@@ -15,6 +15,7 @@ Problem::Problem(AI::SearchType searchType) : AI::Problem(searchType)
 {
 	int numPeople;
 
+
 	if (searchType == AI::A_STAR)
 	{
 		int heurNum = AI::Util::getInt("Which heuristic function do you want to use?\n"
@@ -26,6 +27,7 @@ Problem::Problem(AI::SearchType searchType) : AI::Problem(searchType)
 	}
 
 	numPeople = AI::Util::getInt("How many people are trying to cross the bridge? ", 0, BridgeState::getMaxPeople());
+	std::cout << std::endl;
 	for (int i = 0; i < numPeople; ++i)
 	{
 		std::stringstream ss;
@@ -33,15 +35,16 @@ Problem::Problem(AI::SearchType searchType) : AI::Problem(searchType)
 		peopleTimes.push_back(AI::Util::getInt(ss.str(), INT_MIN, INT_MAX));
 		ss.clear();
 	}
+	BridgeState::setPeopleTimes(&peopleTimes);
 	std::cout << std::endl;
 }
 
 AI::State* Problem::genInitialState()
 {
-	return new BridgeState(&peopleTimes, LEFT);
+	return new BridgeState(LEFT);
 }
 
 AI::State* Problem::genGoalState()
 {
-	return new BridgeState(&peopleTimes, RIGHT);
+	return new BridgeState(RIGHT);
 }

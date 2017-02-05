@@ -6,16 +6,21 @@
 using namespace BridgeProblem;
 
 BridgeHeuristic BridgeState::heuristic = RIGHT_TIMES;
+const std::vector<int>* BridgeState::peopleTimes = NULL;
 
 void BridgeState::setHeuristic(BridgeHeuristic heuristic)
 {
 	BridgeState::heuristic = heuristic;
 }
 
-BridgeState::BridgeState(std::vector<int>* peopleTimes, BridgeSide startingSide)
+void BridgeState::setPeopleTimes(std::vector<int>* peopleTimes)
+{
+	BridgeState::peopleTimes = peopleTimes;
+}
+
+BridgeState::BridgeState(BridgeSide startingSide)
 {
 	torchSide = startingSide;
-	this->peopleTimes = peopleTimes;
 	peopleSides = new BridgeSide[peopleTimes->size()];
 	for (unsigned int i = 0; i < peopleTimes->size(); ++i)
 		peopleSides[i] = startingSide;
@@ -25,7 +30,6 @@ BridgeState::BridgeState(const BridgeState &bs)
 {
 	int numPeople = bs.peopleTimes->size();
 	torchSide = bs.torchSide;
-	peopleTimes = bs.peopleTimes;
 	peopleSides = new BridgeSide[numPeople];
 	std::memcpy(peopleSides, bs.peopleSides, sizeof(BridgeSide) * numPeople);
 }

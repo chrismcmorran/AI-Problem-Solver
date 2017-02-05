@@ -21,7 +21,7 @@ namespace BridgeProblem {
 	// A state of the bridge problem
 	class BridgeState : public AI::State {
 		public:
-			BridgeState(std::vector<int>* peopleTimes, BridgeSide startingSide);
+			BridgeState(BridgeSide startingSide);
 			BridgeState(const BridgeState &bs);
 			virtual ~BridgeState();
 
@@ -37,9 +37,10 @@ namespace BridgeProblem {
 			virtual int estimateGoalDist() const;
 			static int getMaxPeople();
 			static void setHeuristic(BridgeHeuristic heuristic);
+			static void setPeopleTimes(std::vector<int>* peopleTimes);
 
 		private:
-			const std::vector<int>* peopleTimes;
+			static const std::vector<int>* peopleTimes;
 			BridgeSide* peopleSides;
 			BridgeSide torchSide;
 			static BridgeHeuristic heuristic;
