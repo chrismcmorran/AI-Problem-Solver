@@ -8,7 +8,7 @@
 
 namespace AI {
 	struct HeuristicComp {
-		bool operator ()(const SearchNode* a, const SearchNode* b)
+		bool operator ()(const SearchNode* a, const SearchNode* b) const
 		{
 			return (a->getCostFromRoot() + a->getState()->estimateGoalDist()) >
 				   (b->getCostFromRoot() + b->getState()->estimateGoalDist());

@@ -43,8 +43,23 @@ void Problem::expand(SearchNode* node)
 
 		SearchNode* newNode = new SearchNode(generatedState, costFromRoot, action, node);
 		fringe->push(newNode);
-		allocatedNodes.insert(newNode);
 		node->incChildCount();
+
+		if (searchType == A_STAR)
+		{
+			std::set<SearchNode*, NodeComp>::iterator it = closed.find(newNode);
+
+			if (it != closed.end() && (*it)->getCostFromRoot() > newNode->getCostFromRoot())
+			{
+				/* Better path found. Instead of updating the existing node,
+				   remove it from the closed set (if present) and add the new,
+				   better-cost node to the fringe (this part is done above).
+				   This effectively does the same thing but does not require
+				   updating pointers (at the cost of some recomputation) */
+				delete *it;
+				closed.erase(it);
+			}
+		}
 	}
 }
 
@@ -72,58 +87,37 @@ static void outputSolution(SearchNode* node, std::ostream& out)
 	}
 }
 
-void Problem::checkLeafNode(SearchNode* node)
-{
-	// Clean up nodes not on the solution path
-	while (node != NULL && !node->hasChildren())
-	{
-		SearchNode* parent = node->getParent();
-		if (parent != NULL)
-			parent->decChildCount();
-		delete node;
-		allocatedNodes.erase(node);
-		node = parent;
-	}
-}
-
 void Problem::cleanup()
 {
 	while (!fringe->empty())
 	{
-		const State* s = fringe->front()->getState();
+		SearchNode* node = fringe->front();
 		fringe->pop();
-		delete s;
+		delete node;
 	}
-	for (std::set<SearchNode*>::iterator it = allocatedNodes.begin(); it != allocatedNodes.end(); ++it)
-		delete *it;
-	for (std::set<const State*, PointerComp<State>>::iterator it = seenStates.begin(); it != seenStates.end(); ++it)
+	for (std::set<SearchNode*, NodeComp>::iterator it = closed.begin(); it != closed.end(); ++it)
 		delete *it;
 }
 
 void Problem::solve()
 {
-	State* initialState = genInitialState();
-	SearchNode* rootNode = new SearchNode(initialState);
-	allocatedNodes.insert(rootNode);
-	fringe->push(rootNode);
+	fringe->push(new SearchNode(genInitialState()));
 	goalState = genGoalState();
 
 	while(!fringe->empty())
 	{
 		SearchNode* node = fringe->front();
-		const AI::State* state = node->getState();
 		fringe->pop();
 
-		// Node has been seen before
-		if (seenStates.find(state) != seenStates.end())
+		// State in node has been seen before
+		if (closed.find(node) != closed.end())
 		{
-			checkLeafNode(node);
-			delete state;
+			delete node;
 			continue;
 		}
-		seenStates.insert(state);
+		closed.insert(node);
 
-		if (*state == *goalState)
+		if (*node->getState() == *goalState)
 		{
 			// Solution found
 			outputSolution(node, std::cout);
@@ -134,7 +128,6 @@ void Problem::solve()
 		{
 			// Generate successor nodes from the current node
 			expand(node);
-			checkLeafNode(node);
 		}
 	}
 	std::cout << "No solution found" << std::endl;

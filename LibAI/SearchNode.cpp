@@ -14,6 +14,7 @@ SearchNode::SearchNode(const State* state, int cost, Action* generatingAction, S
 SearchNode::~SearchNode()
 {
 	delete generatingAction;
+	delete state;
 }
 
 SearchNode* SearchNode::getParent() const

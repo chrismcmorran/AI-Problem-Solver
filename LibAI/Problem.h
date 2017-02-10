@@ -14,13 +14,11 @@ namespace AI {
 		A_STAR
 	};
 
-	// Allows std::set of pointers to be sorted using an overridden operator<
-	template <typename T>
-	struct PointerComp
+	struct NodeComp
 	{
-		bool operator ()(const T* a, const T* b) const
+		bool operator()(const SearchNode* a, const SearchNode* b) const
 		{
-		   return *a < *b;
+			return *(a->getState()) < *(b->getState());
 		}
 	};
 
@@ -33,13 +31,11 @@ namespace AI {
 
 		private:
 			Fringe* fringe;
-			std::set<const State*, PointerComp<State>> seenStates;
-			std::set<SearchNode*> allocatedNodes;
+			std::set<SearchNode*, NodeComp> closed;
 			const State* goalState;
 			SearchType searchType;
 
 			void expand(SearchNode* node);
-			void checkLeafNode(SearchNode* node);
 			bool goalReached(const State* currState);
 			void cleanup();
 			virtual State* genInitialState() = 0;
