@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 
-using namespace TileProblem;
+using namespace TilePuzzle;
 
 TileAction::TileAction(short row1, short col1, short row2, short col2)
 {

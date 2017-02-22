@@ -4,14 +4,14 @@
 #include <string>
 #include <vector>
 
-#include "../LibAI/Util.h"
+#include "../../LibAI/Util.h"
 
-#include "BridgeProblem.h"
+#include "BridgePuzzle.h"
 #include "BridgeState.h"
 
-using namespace BridgeProblem;
+using namespace BridgePuzzle;
 
-Problem::Problem(AI::SearchType searchType) : AI::Problem(searchType)
+Puzzle::Puzzle(AI::SearchType searchType) : AI::Puzzle(searchType)
 {
 	int numPeople;
 
@@ -39,12 +39,12 @@ Problem::Problem(AI::SearchType searchType) : AI::Problem(searchType)
 	std::cout << std::endl;
 }
 
-AI::State* Problem::genInitialState()
+AI::State* Puzzle::genInitialState() const
 {
 	return new BridgeState(LEFT);
 }
 
-AI::State* Problem::genGoalState()
+AI::State* Puzzle::genGoalState() const
 {
 	return new BridgeState(RIGHT);
 }

@@ -3,7 +3,7 @@
 #include "BridgeAction.h"
 #include "BridgeState.h"
 
-using namespace BridgeProblem;
+using namespace BridgePuzzle;
 
 BridgeHeuristic BridgeState::heuristic = RIGHT_TIMES;
 const std::vector<int>* BridgeState::peopleTimes = NULL;
@@ -145,7 +145,7 @@ std::string BridgeState::describe() const
 	return ss.str();
 }
 
-int BridgeState::estimateGoalDist() const
+int BridgeState::heuristicValue() const
 {
 	int leftPeople = 0, rightTimes = 0;
 	for (unsigned int i = 0; i < peopleTimes->size(); ++i)

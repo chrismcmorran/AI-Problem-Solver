@@ -4,7 +4,7 @@
 #include "TileAction.h"
 #include "TileState.h"
 
-using namespace TileProblem;
+using namespace TilePuzzle;
 
 short TileState::boardWidth = 0, TileState::boardHeight = 0;
 TileHeuristic TileState::heuristic = MISPLACED_TILES;
@@ -167,7 +167,7 @@ std::string TileState::describe() const
 	return ss.str();
 }
 
-int TileState::estimateGoalDist() const
+int TileState::heuristicValue() const
 {
 	int numMisplaced = 0, manhattan = 0;
 	int totalTiles = boardHeight * boardWidth;

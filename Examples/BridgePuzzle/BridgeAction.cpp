@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 
-using namespace BridgeProblem;
+using namespace BridgePuzzle;
 
 BridgeAction::BridgeAction(BridgeSide dest, int p1, int p2)
 {

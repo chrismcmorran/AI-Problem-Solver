@@ -1,5 +1,5 @@
-#ifndef _PROBLEM_H
-#define _PROBLEM_H
+#ifndef _PUZZLE_H
+#define _PUZZLE_H
 
 #include <ostream>
 #include <set>
@@ -22,11 +22,11 @@ namespace AI {
 		}
 	};
 
-	// A problem to be solved using AI techniques
-	class Problem {
+	// A puzzle to be solved using AI techniques
+	class Puzzle {
 		public:
-			Problem(SearchType searchType);
-			virtual ~Problem();
+			Puzzle(SearchType searchType);
+			virtual ~Puzzle();
 			void solve();
 
 		private:
@@ -35,11 +35,10 @@ namespace AI {
 			const State* goalState;
 			SearchType searchType;
 
-			void expand(SearchNode* node);
-			bool goalReached(const State* currState);
+			void generateSuccessors(SearchNode* node);
 			void cleanup();
-			virtual State* genInitialState() = 0;
-			virtual State* genGoalState() = 0;
+			virtual State* genInitialState() const = 0;
+			virtual State* genGoalState() const = 0;
 	};
 }
 

@@ -1,11 +1,11 @@
-#ifndef _TILE_PROBLEM_H
-#define _TILE_PROBLEM_H
+#ifndef _TILE_PUZZLE_H
+#define _TILE_PUZZLE_H
 
-#include "../LibAI/Problem.h"
-#include "../LibAI/State.h"
+#include "../../LibAI/Puzzle.h"
+#include "../../LibAI/State.h"
 
-namespace TileProblem {
-	/* The tile problem:
+namespace TilePuzzle {
+	/* The tile puzzle:
 
 	   An mxn grid contains tiles with the numbers 1 through (mxn)-1 on them.
 	   Initially these tiles are in a random order. One space is left blank. The
@@ -13,13 +13,13 @@ namespace TileProblem {
 
 	   -Any tile that is adjacent or diagonal to the blank space can slide into it
 	   -Two non-blank tiles can be swapped as per the chess "horse move" */
-	class Problem : public AI::Problem {
+	class Puzzle : public AI::Puzzle {
 		public:
-			Problem(AI::SearchType searchType);
+			Puzzle(AI::SearchType searchType);
 
 		private:
-			virtual AI::State* genInitialState();
-			virtual AI::State* genGoalState();
+			virtual AI::State* genInitialState() const;
+			virtual AI::State* genGoalState() const;
 	};
 }
 

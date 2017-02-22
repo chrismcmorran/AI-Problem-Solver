@@ -19,16 +19,12 @@ namespace AI {
 			void setGeneratingAction(Action* action);
 			int getCostFromRoot() const;
 			void setCostFromRoot(int cost);
-			bool hasChildren() const;
-			void incChildCount();
-			void decChildCount();
 
 		private:
 			SearchNode* parent;
 			const State* state;
 			Action* generatingAction;
 			int costFromRoot;
-			int children;
 	};
 }
 

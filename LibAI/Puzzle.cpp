@@ -2,7 +2,7 @@
 #include <queue>
 #include <string>
 #include <iostream>
-#include "Problem.h"
+#include "Puzzle.h"
 #include "Action.h"
 #include "BreadthFirstFringe.h"
 #include "DepthFirstFringe.h"
@@ -10,7 +10,7 @@
 
 using namespace AI;
 
-Problem::Problem(SearchType searchType)
+Puzzle::Puzzle(SearchType searchType)
 {
 	if (searchType == BREADTH_FIRST)
 		fringe = new BreadthFirstFringe();
@@ -22,15 +22,15 @@ Problem::Problem(SearchType searchType)
 	this->searchType = searchType;
 }
 
-Problem::~Problem()
+Puzzle::~Puzzle()
 {
 	delete fringe;
 	delete goalState;
 }
 
-void Problem::expand(SearchNode* node)
+void Puzzle::generateSuccessors(SearchNode* node)
 {
-	// Generate successor actions
+	// Generate successor nodes (actions and states)
 	std::vector<Action*> actions;
 	const State* state = node->getState();
 	state->getActions(actions);
@@ -43,7 +43,6 @@ void Problem::expand(SearchNode* node)
 
 		SearchNode* newNode = new SearchNode(generatedState, costFromRoot, action, node);
 		fringe->push(newNode);
-		node->incChildCount();
 
 		if (searchType == A_STAR)
 		{
@@ -75,10 +74,10 @@ static void outputSolution(SearchNode* node, std::ostream& out)
 		node = node->getParent();
 	}
 
-	// Output actions and states from the beginning of the problem to the end
+	// Output actions and states along solution path
 	for (it = path.begin(); it != path.end(); ++it)
 	{
-		AI::Action* a = (*it)->getGeneratingAction();
+		Action* a = (*it)->getGeneratingAction();
 		const AI::State* s = (*it)->getState();
 		if (a != NULL)
 			out << a->describe(s) << std::endl;
@@ -87,7 +86,7 @@ static void outputSolution(SearchNode* node, std::ostream& out)
 	}
 }
 
-void Problem::cleanup()
+void Puzzle::cleanup()
 {
 	while (!fringe->empty())
 	{
@@ -99,7 +98,7 @@ void Problem::cleanup()
 		delete *it;
 }
 
-void Problem::solve()
+void Puzzle::solve()
 {
 	fringe->push(new SearchNode(genInitialState()));
 	goalState = genGoalState();
@@ -126,8 +125,7 @@ void Problem::solve()
 		}
 		else
 		{
-			// Generate successor nodes from the current node
-			expand(node);
+			generateSuccessors(node);
 		}
 	}
 	std::cout << "No solution found" << std::endl;

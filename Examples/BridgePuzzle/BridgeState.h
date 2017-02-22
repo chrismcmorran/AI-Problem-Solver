@@ -2,9 +2,9 @@
 #define _BRIDGE_STATE_H
 
 #include <vector>
-#include "../LibAI/State.h"
+#include "../../LibAI/State.h"
 
-namespace BridgeProblem {
+namespace BridgePuzzle {
 	class BridgeAction;
 
 	enum BridgeSide {
@@ -18,7 +18,7 @@ namespace BridgeProblem {
 		AVERAGE
 	};
 
-	// A state of the bridge problem
+	// A state of the bridge puzzle
 	class BridgeState : public AI::State {
 		public:
 			BridgeState(BridgeSide startingSide);
@@ -34,7 +34,7 @@ namespace BridgeProblem {
 			virtual unsigned long getStateCode() const;
 			virtual void getActions(std::vector<AI::Action*>& actions) const;
 			virtual std::string describe() const;
-			virtual int estimateGoalDist() const;
+			virtual int heuristicValue() const;
 			static int getMaxPeople();
 			static void setHeuristic(BridgeHeuristic heuristic);
 			static void setPeopleTimes(std::vector<int>* peopleTimes);

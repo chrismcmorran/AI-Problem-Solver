@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.6) 
-project(4106-a1)
+project(AI-Problem-Solver)
 
-set(LIBS LibAI BridgeProblem TileProblem)
+set(LIBS LibAI)
 add_subdirectory(LibAI)
-add_subdirectory(BridgeProblem)
-add_subdirectory(TileProblem)
-add_subdirectory(A1)
+add_subdirectory(Examples)

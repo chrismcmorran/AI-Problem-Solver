@@ -1,9 +1,9 @@
 #ifndef _TILE_STATE_H
 #define _TILE_STATE_H
 
-#include "../LibAI/State.h"
+#include "../../LibAI/State.h"
 
-namespace TileProblem {
+namespace TilePuzzle {
 	class TileAction;
 
 	enum TileHeuristic {
@@ -12,7 +12,7 @@ namespace TileProblem {
 		AVERAGE
 	};
 
-	// A state of the tile problem
+	// A state of the tile puzzle
 	class TileState : public AI::State {
 		public:
 			TileState();
@@ -25,7 +25,7 @@ namespace TileProblem {
 			virtual unsigned long getStateCode() const;
 			virtual void getActions(std::vector<AI::Action*>& actions) const;
 			virtual std::string describe() const;
-			virtual int estimateGoalDist() const;
+			virtual int heuristicValue() const;
 
 			static void setBoardDimensions(short width, short height);
 			static short getBoardWidth();

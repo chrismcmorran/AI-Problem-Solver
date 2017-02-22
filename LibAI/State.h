@@ -7,12 +7,12 @@
 namespace AI {
 	class Action;
 	class State {
-		// A given state of the puzzle
+		// A given state of the problem
 		public:
 			virtual unsigned long getStateCode() const = 0;
 			virtual void getActions(std::vector<Action*>& actions) const = 0;
 			virtual std::string describe() const = 0;
-			virtual int estimateGoalDist() const = 0;
+			virtual int heuristicValue() const = 0;
 			virtual ~State() {};
 
 			bool operator<(const State& other) const;

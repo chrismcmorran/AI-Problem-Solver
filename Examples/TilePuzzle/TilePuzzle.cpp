@@ -4,14 +4,14 @@
 #include <string>
 #include <vector>
 
-#include "../LibAI/Util.h"
+#include "../../LibAI/Util.h"
 
-#include "TileProblem.h"
+#include "TilePuzzle.h"
 #include "TileState.h"
 
-using namespace TileProblem;
+using namespace TilePuzzle;
 
-Problem::Problem(AI::SearchType searchType) : AI::Problem(searchType)
+Puzzle::Puzzle(AI::SearchType searchType) : AI::Puzzle(searchType)
 {
 	short height, width;
 
@@ -31,7 +31,7 @@ Problem::Problem(AI::SearchType searchType) : AI::Problem(searchType)
 	TileState::setBoardDimensions(width, height);
 }
 
-AI::State* Problem::genInitialState()
+AI::State* Puzzle::genInitialState() const
 {
 	TileState* initial = new TileState();
 
@@ -50,7 +50,7 @@ AI::State* Problem::genInitialState()
 	return initial;
 }
 
-AI::State* Problem::genGoalState()
+AI::State* Puzzle::genGoalState() const
 {
 	return new TileState();
 }
