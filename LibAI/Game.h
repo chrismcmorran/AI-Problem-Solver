@@ -9,15 +9,21 @@ namespace AI {
 		public:
 			Game(unsigned int searchDepth);
 			virtual ~Game() {};
-			void play();
+			virtual void play() const = 0;
+			void nextMove(const State* currentState,
+						  Action** outAction,
+						  State** outState) const;
 
 		private:
 			unsigned int searchDepth;
 
-			virtual State* genInitialState() = 0;
 			virtual bool gameEnded(const State* state) const = 0;
-			int minimax(const State* s, unsigned int depth, Action** outAction, State** outState, int alpha=INT_MIN, int beta=INT_MAX);
-			bool player1;
+			int minimax(const State* s,
+						unsigned int depth,
+						Action** outAction,
+						State** outState,
+						int alpha,
+						int beta) const;
 	};
 }
 

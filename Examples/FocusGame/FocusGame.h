@@ -24,9 +24,9 @@ namespace FocusGame {
 	class Game : public AI::Game {
 		public:
 			Game(unsigned int searchDepth);
+			void play() const;
 
 		private:
-			virtual AI::State* genInitialState();
 			virtual bool gameEnded(const AI::State* state) const;
 			unsigned int searchDepth;
 	};

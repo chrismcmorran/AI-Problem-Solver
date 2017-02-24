@@ -7,7 +7,7 @@
 
 using namespace FocusGame;
 
-FocusHeuristic FocusState::heuristic = CONTROL_PERCENT;
+FocusHeuristic FocusState::heuristic = CONTROLLED_STACKS;
 
 void FocusState::setHeuristic(FocusHeuristic heuristic)
 {
@@ -86,16 +86,14 @@ void FocusState::pushStackPiece(short row, short col, bool p2)
 
 void FocusState::removeStackPieces(short row, short col, short count)
 {
-	/* Remove count pieces from the stack at (row, col).
-
-	   We do not need to worry about shifting out removed
-	   values since the height value is checked before
-	   the stack is accessed */
+	// Remove count pieces from the top of the stack at (row, col)
 	unsigned char s = getStack(row, col);
 	short height = getStackHeight(s) - count;
 	if (height < 0)
 		height = 0;
-	s = ((height << 5) | (s & 0x1F));
+	if (count > 5)
+		count = 5;
+	s = ((height << 5) | ((s >> count) & 0x1F));
 	setStack(row, col, s);
 }
 
@@ -126,6 +124,12 @@ bool FocusState::gameEnded() const
 
 	return p1Captured >= 8 || p2Captured >= 8 ||
 		   !p1HasStacks || !p2HasStacks;
+}
+
+unsigned long FocusState::getStateCode() const
+{
+	// Don't need to compare this state for uniqueness. Just use its address
+	return (unsigned long)this;
 }
 
 static void generateActions(std::vector<AI::Action*>& actions, short row, short col, short moveDist, bool splitting)
@@ -160,19 +164,12 @@ static void generateActions(std::vector<AI::Action*>& actions, short row, short 
 	short i;
 
 	// Stack can move up to moveDist spaces in either direction (within bounds)
-	for (i = startRow; i <= endRow; ++i)
-		if (i != row)
-			actions.push_back(new FocusAction(row, col, i, col, splitting));
-
-	for (i = startCol; i <= endCol; ++i)
+	for (i = endCol; i >= startCol; --i)
 		if (i != col)
 			actions.push_back(new FocusAction(row, col, row, i, splitting));
-}
-
-unsigned long FocusState::getStateCode() const
-{
-	// Don't need to compare this state for uniqueness. Just use its address
-	return (unsigned long)this;
+	for (i = endRow; i >= startRow; --i)
+		if (i != row)
+			actions.push_back(new FocusAction(row, col, i, col, splitting));
 }
 
 void FocusState::getActions(std::vector<AI::Action*>& actions) const
@@ -265,10 +262,10 @@ std::string FocusState::describe() const
 
 int FocusState::heuristicValue() const
 {
-	if (heuristic == CONTROL_PERCENT)
+	if (heuristic == CONTROLLED_STACKS)
 	{
-		// Heuristic 1: percentage of stacks that are controlled by the player
-		int controlledStacks = 0, totalStacks = 0;
+		// Heuristic 1: controlled stacks
+		int controlledStacks = 0, opponentStacks = 0;
 		for (short i = 0; i < 64; ++i)
 		{
 			unsigned char stack = board[i];
@@ -278,14 +275,18 @@ int FocusState::heuristicValue() const
 				   not the one who is going next turn */
 				if (p1Turn != (stack & 1))
 					++controlledStacks;
-				++totalStacks;
+				else
+					++opponentStacks;
 			}
 		}
-		return (int)((controlledStacks/(float)totalStacks)*100);
+		return (controlledStacks - (opponentStacks * 10));
 	}
 	else
 	{
-		// TODO: second heuristic
-		return 0;
+		// Heuristic 2: captured pieces
+		if (p1Turn)
+			return ((p2Captured * 10) - p1Captured);
+		else
+			return ((p1Captured * 10) - p2Captured);
 	}
 }

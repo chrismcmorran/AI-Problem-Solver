@@ -9,10 +9,14 @@ using namespace AI;
 Game::Game(unsigned int searchDepth)
 {
 	this->searchDepth = searchDepth;
-	player1 = true;
 }
 
-int Game::minimax(const State* s, unsigned int depth, Action** outAction, State** outState, int alpha, int beta)
+int Game::minimax(const State* s,
+				  unsigned int depth,
+				  Action** outAction,
+				  State** outState,
+				  int alpha,
+				  int beta) const
 {
 	if (depth == 0 || gameEnded(s))
 		return s->heuristicValue();
@@ -45,61 +49,43 @@ int Game::minimax(const State* s, unsigned int depth, Action** outAction, State*
 			State* generatedState;
 			Action* action = actions.at(i);
 
-			// A better path exists at another node - stop evaluating children
-			if (i > 0 && beta <= alpha)
+			// If a better path exists at another node, stop evaluating children
+			if (i == 0 || beta > alpha)
 			{
-				delete action;
-				continue;
-			}
+				action->execute(s, &generatedState);
+				utility = minimax(generatedState, depth - 1, outAction, outState, alpha, beta);
+				*pruneVal = comp(*pruneVal, utility);
+				bestUtility = comp(utility, bestUtility);
 
-			action->execute(s, &generatedState);
-			utility = minimax(generatedState, depth - 1, outAction, outState, alpha, beta);
-			*pruneVal = comp(*pruneVal, utility);
-			bestUtility = comp(utility, bestUtility);
-
-			if (utility == bestUtility && depth == searchDepth)
-			{
-				// Update best move
-				delete *outAction;
-				delete *outState;
-				*outAction = action;
-				*outState = generatedState;
+				if (utility == bestUtility && depth == searchDepth)
+				{
+					// Update best move
+					delete *outAction;
+					delete *outState;
+					*outAction = action;
+					*outState = generatedState;
+				}
+				else
+				{
+					delete action;
+					delete generatedState;
+				}
 			}
 			else
-			{
 				delete action;
-				delete generatedState;
-			}
 		}
 		return bestUtility;
 	}
 }
 
-void Game::play()
+void Game::nextMove(const State* currentState,
+					Action** outAction,
+					State** outState) const
 {
-	State* currentState = NULL;
-	State* nextState = genInitialState();
-	Action* nextAction = NULL;
+	*outAction = NULL;
+	*outState = NULL;
 
-	while (currentState == NULL || !gameEnded(currentState))
-	{
-		if (nextAction != NULL)
-			std::cout << nextAction->describe(currentState) << std::endl;
-
-		delete nextAction;
-		delete currentState;
-		currentState = nextState;
-		nextAction = NULL;
-		nextState = NULL;
-
-		std::cout << currentState->describe() << std::endl;	
-
-		// Play next move
-		minimax(currentState, searchDepth, &nextAction, &nextState);
-		player1 = !player1;
-	}
-
-	delete currentState;
-	delete nextState;
-	delete nextAction;
+	// Generate the next move using minimax
+	if (!gameEnded(currentState))
+		minimax(currentState, searchDepth, outAction, outState, INT_MIN, INT_MAX);
 }

@@ -16,7 +16,8 @@ namespace FocusGame {
 	typedef unsigned char FocusStack;
 
 	enum FocusHeuristic {
-		CONTROL_PERCENT = 1
+		CONTROLLED_STACKS = 1,
+		CAPTURED_PIECES
 	};
 
 	// A state of the Focus game
