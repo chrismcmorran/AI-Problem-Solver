@@ -12,7 +12,7 @@ Game::Game(unsigned int searchDepth)
 	player1 = true;
 }
 
-int Game::minimax(const State* s, unsigned int depth, Action** outAction, State** outState)
+int Game::minimax(const State* s, unsigned int depth, Action** outAction, State** outState, int alpha, int beta)
 {
 	if (depth == 0 || gameEnded(s))
 		return s->heuristicValue();
@@ -20,18 +20,22 @@ int Game::minimax(const State* s, unsigned int depth, Action** outAction, State*
 	{
 		const int& (*comp)(const int&, const int&);
 		int bestUtility;
+		int* pruneVal;
 		std::vector<Action*> actions;
 		s->getActions(actions);
 
 		if (depth % 2)
 		{
+			// Minimizing
 			comp = std::min;
 			bestUtility = INT_MAX;
+			pruneVal = &beta;
 		}
 		else
 		{
 			comp = std::max;
 			bestUtility = INT_MIN;
+			pruneVal = &alpha;
 		}
 
 		// Generate and evaluate possible actions
@@ -40,9 +44,17 @@ int Game::minimax(const State* s, unsigned int depth, Action** outAction, State*
 			int utility;
 			State* generatedState;
 			Action* action = actions.at(i);
-			action->execute(s, &generatedState);
 
-			utility = minimax(generatedState, depth - 1, outAction, outState);
+			// A better path exists at another node - stop evaluating children
+			if (i > 0 && beta <= alpha)
+			{
+				delete action;
+				continue;
+			}
+
+			action->execute(s, &generatedState);
+			utility = minimax(generatedState, depth - 1, outAction, outState, alpha, beta);
+			*pruneVal = comp(*pruneVal, utility);
 			bestUtility = comp(utility, bestUtility);
 
 			if (utility == bestUtility && depth == searchDepth)

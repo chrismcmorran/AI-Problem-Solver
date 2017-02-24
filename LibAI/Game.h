@@ -16,7 +16,7 @@ namespace AI {
 
 			virtual State* genInitialState() = 0;
 			virtual bool gameEnded(const State* state) const = 0;
-			int minimax(const State* s, unsigned int depth, Action** outAction, State** outState);
+			int minimax(const State* s, unsigned int depth, Action** outAction, State** outState, int alpha=INT_MIN, int beta=INT_MAX);
 			bool player1;
 	};
 }
