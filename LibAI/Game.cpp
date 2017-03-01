@@ -28,7 +28,7 @@ int Game::minimax(const State* s,
 		std::vector<Action*> actions;
 		s->getActions(actions);
 
-		if (depth % 2)
+		if ((searchDepth - depth) % 2)
 		{
 			// Minimizing
 			comp = std::min;
